@@ -1,809 +1,564 @@
-:: Widgets Combat [widget]
+:: Asylum Widgets [widget]
 
-<<widget "takeVirginity">>
-	<<if Array.isArray(_args[0])>>
-		/* Array of NPCList index's, should only be used for double penetration */
-		<<set $_npc to $NPCList[_args[0][0]]>>
-		<<set $_npc2 to $NPCList[_args[0][1]]>>
-		<<if $_npc?.fullDescription and $_npc2?.fullDescription>>
-			<<set $_taker to `${$_npc.fullDescription} and ${$_npc2.fullDescription}`>>
-		<</if>>
+<<widget "asylumeffects">>
+	<<if Time.hour lte 5>>
+		<<set $asylumstate to "sleep">>
+	<<elseif Time.hour lte 8>>
+		<<set $asylumstate to "free">>
+	<<elseif Time.hour is 9>>
+		<<set $asylumstate to "exercise">>
+	<<elseif Time.hour is 10>>
+		<<set $asylumstate to "firsttreatment">>
+	<<elseif Time.hour lte 14>>
+		<<set $asylumstate to "free">>
+	<<elseif Time.hour is 15>>
+		<<set $asylumstate to "secondtreatment">>
+	<<elseif Time.hour lte 19>>
+		<<set $asylumstate to "free">>
+	<<elseif Time.hour is 20>>
+		<<set $asylumstate to "assessment">>
+	<<elseif Time.hour is 21>>
+		<<set $asylumstate to "free">>
+	<<else>>
+		<<set $asylumstate to "sleep">>
 	<</if>>
-	<<if !$_taker>>
-		<<set $_taker to _args[0]>>
-		<<set $_npcIndex to $NPCNameList.indexOf($_taker)>>
-		<<if $_npcIndex isnot -1>>
-			<<set $_npc to $NPCName[$_npcIndex]>>
-		<<else>>
-			<<run $NPCList.forEach(npc => {
-				if (npc.fullDescription is $_taker) $_npc to npc;
-			})>>
-		<</if>>
+	<<set $suspicion = Math.clamp($suspicion, 0, 100)>>
+	<<set $asylumstatus = Math.clamp($asylumstatus, 0, 100)>>
+<</widget>>
+
+<<widget "asylumstats">>
+	<<if $suspicion gte 80>>
+		<span class="red">Security actively watches you. Even the nurses glance your way warily.</span>
+	<<elseif $suspicion gte 20>>
+		<span class="blue">You catch the occasional member of security watching you.</span>
+	<<else>>
+		<span class="green">The staff ignore you.</span>
 	<</if>>
-	<<if _args[1]>>
-		<<if _args[1] is "penile" and playerHasStrapon()>>
-			<!-- Do nothing -->
+	<br>
+	<<if $asylumstatus gte 80>>
+		<span class="green">The other patients smile when they see you.</span>
+	<<elseif $asylumstatus gte 20>>
+		<span class="blue">The other patients ignore you.</span>
+	<<else>>
+		<span class="red">The other patients shun you.</span>
+	<</if>>
+	<br><br>
+<</widget>>
+
+<<widget "asylumtreatments">>
+<<if isPregnancyEnding()>>
+	<<pregnancyPassout "asylumHarper">>
+<<else>>
+	<<cleareventpool>>
+	<<addinlineevent "asylum_treatment_1" 1>>
+		<<if $o_long_and_beautiful gte 1 and $o_long_and_beautiful lte 7 and $rng % 2 and maleChance() lt 100>>
+			<<set $phase to 0>><<set $o_long_and_beautiful += 1>>
+			<<npc Harper>><<person1>>
+			You are led into a thin room. Curtains line one side.
+			<br>
+			"Hello," Doctor Harper says. "I'm glad you could make it. Please stand just there."
+			<<He>> pushes a button on the wall by the door and the curtain pulls back, revealing the other half of the room. A patient lies on the floor.
+			<br>
+			The long, matted hair covering most of her face hides any visible reaction.
+			<br><br>
+			<<person1>>"This treatment isn't for you," the doctor says. "It's for your fellow patient. I just need an assistant."
+			<<He>> gestures at a button on a table beside you. "You'll need to press that button when I say. I'll be busy helping this patient. Press it now."
+			<br><br>
+			<<link [[Press|Asylum Button Long Hair Press]]>><</link>>
+			<br>
+			<<link [[Refuse|Asylum Button Long Hair Refuse]]>><<suspicion 1>><<def 1>><</link>><<gsuspicion>>
+			<br>
 		<<else>>
-			<<if $player.virginity[_args[1]] is true>>
-				<<if $activeNightmare or ($wraith.mimic is $_taker)>>
-					<<switch $_taker>>
-						<<case "Robin">><<displayFeatFake "Robin the Lover">>
-						<<case "Kylar">><<displayFeatFake "Kylar the Obsessed">>
-						<<case "Eden">><<displayFeatFake "Eden the Lonely">>
-						<<case "Whitney">><<displayFeatFake "Whitney the Tsundere">>
-						<<case "Avery">><<displayFeatFake "Avery the Moneybags">>
-						<<case "Leighton">><<displayFeatFake "Leighton the Shady">>
-						<<case "Alex">><<displayFeatFake "Alex the Robust">>
-						<<case "Great Hawk">><<displayFeatFake "Great Hawk the Terror">>
-						<<case "Wren">><<displayFeatFake "Wren the Sly">>
-						<<case "Black Wolf">><<displayFeatFake "Great Wolf the Alpha">>
-						<<case "Harper">><<displayFeatFake "Harper the Hypnotist">>
-						<<case "Morgan">><<displayFeatFake "Morgan the Lost">>
-					<</switch>>
-					<<if !$activeNightmare>>
-						<<set $_taker to "Ivory Wraith">>
-					<</if>>
-				<<elseif _args[1] is "vaginal" or _args[1] is "penile">>
-					<<switch $_taker>>
-						<<case "Robin">><<earnFeat "Robin the Lover">>
-						<<case "Kylar">><<earnFeat "Kylar the Obsessed">>
-						<<case "Eden">><<earnFeat "Eden the Lonely">>
-						<<case "Whitney">><<earnFeat "Whitney the Tsundere">>
-						<<case "Avery">><<earnFeat "Avery the Moneybags">>
-						<<case "Leighton">><<earnFeat "Leighton the Shady">>
-						<<case "Alex">><<earnFeat "Alex the Robust">>
-						<<case "Great Hawk">><<earnFeat "Great Hawk the Terror">>
-						<<case "Wren">><<earnFeat "Wren the Sly">>
-						<<case "Black Wolf">><<earnFeat "Great Wolf the Alpha">>
-						<<case "Harper">><<earnFeat "Harper the Hypnotist">>
-						<<case "Morgan">><<earnFeat "Morgan the Lost">>
-					<</switch>>
-				<</if>>
-
-				<<if !$player.virginityDetails>>
-					<<set $player.virginityDetails to {}>>
-				<</if>>
-				<<set $player.virginityDetails[_args[1]] to {
-					timestamp: Time.date.timeStamp,
-					taker: $_taker,
-					passage: $passage,
-				}>>
-				<<if $combat>>
-					<<set $player.virginityDetails[_args[1]].consensual to !!$consensual>>
-					<<set $player.virginityDetails[_args[1]].position to $position>>
-				<<elseif _consensualOverride isnot undefined>>
-					<<set $player.virginityDetails[_args[1]].consensual to _consensualOverride>>
-					<<unset _consensualOverride>>
-				<</if>>
-				<<if _args[1] is "penile">>
-					<<set $player.virginityDetails[_args[1]].playerPenisSize to $player.penissize>>
-				<<elseif ["vaginal", "anal", "oral"].includes(_args[1])>>
-					<<if $_npc>>
-						<<set $player.virginityDetails[_args[1]].npcPenisSize to $_npc.penissize>>
-						<<set $player.virginityDetails[_args[1]].npcPenisdesc to $_npc.penisdesc>>
-					<</if>>
-					<<if $_npc2>>
-						<<set $player.virginityDetails[_args[1]].npcPenisSize2 to $_npc2.penissize>>
-						<<set $player.virginityDetails[_args[1]].npcPenisdesc2 to $_npc2.penisdesc>>
-					<</if>>
-					<<if !$player.virginityDetails[_args[1]].npcPenisSize>>
-						<<if $tentacles>>
-							<<run Object.values($tentacles).forEach(tentacle => {
-								if (tentacle and tentacle.fullDesc is $_taker and tentacle.size isnot undefined) $player.virginityDetails[_args[1]].tentacleSize to tentacle.size;
-							})>>
-						<</if>>
-					<</if>>
-				<</if>>
-
-				<<if $_taker isnot undefined and $_taker isnot 0>>
-					<<set $player.virginity[_args[1]] to $_taker>>
-					<<if $ironmanmode is true and $passage != "Loveth">>
-						<<run ironmanAutoSave()>>
-					<</if>>
+			<<set $phase to 0>>
+			<<npc Harper>><<person1>><<generate2>>
+			You are led into a thin room. Shutters line one side. "Hello," Doctor Harper says. "I'm glad you could make it. Please take a seat." <<He>> pushes a button on the counter beside <<him>>. The shutters open, revealing a glass window. Another patient sits in the room beyond. <<person2>><<He>> looks nervous, but doesn't react to the reveal.
+			<br><br>
+			<<person1>>"This treatment isn't for you," the doctor says. "It's for your fellow patient. I just need an assistant." <<He>> gestures at a button in front of you. "You'll need to press this button when I say. I'll be busy taking notes. Press it now."
+			<br><br>
+			<<link [[Press|Asylum Button Press]]>><</link>>
+			<br>
+			<<link [[Refuse|Asylum Button Refuse]]>><<suspicion 1>><<def 1>><</link>><<gsuspicion>>
+			<br>
+		<</if>>
+	<</addinlineevent>>
+	<<addinlineevent "asylum_treatment_2" 1>>
+		<<npc Harper>><<person1>>You are led to Doctor Harper's office. <<He>> waits for you behind <<his>> desk. "Please take a seat," <<he>> says. There are no other chairs.
+		<br><br>
+		<<link [[Sit on desk|Asylum Sit Desk]]>><</link>>
+		<br>
+		<<link [[Sit on lap|Asylum Sit Lap]]>><</link>><<promiscuous1>><<lsuspicion>><<lawareness -1>>
+		<br>
+		<<link [[Stay stood|Asylum Sit Stand]]>><<suspicion 1>><</link>><<gsuspicion>>
+		<br>
+	<</addinlineevent>>
+	<<addinlineevent "asylum_treatment_3" 1>>
+		<<npc Harper>><<person1>><<generate2>>You are led into a room with a large window facing the grounds, and the forest beyond. Doctor Harper waits for you, stood beside a <<person2>><<person>>. Another patient. Several orderlies wait by the wall.
+		<br><br>
+		"Thank you both for coming," the doctor says. "Today I want to talk about modesty. It shouldn't feel bad to be exposed. It should feel good. I want one of you to strip." The <<person>> looks horrified at the thought. "And stand in front of the window there."
+		<br><br>
+		You can see many patients exercising outside, as well as staff watching over them. The <<persons>> horror becomes panic. "P-please," <<he>> says. "Don't make me."
+		<br><br>
+		<<person1>>Harper looks at you. "You get to decide which of you strips," <<he>> says. The <<person2>><<person>> looks at you, near tears.
+		<br><br>
+		<<if hasSexStat("exhibitionism", 5)>>
+			<<link [[Strip and flaunt|Asylum You Flaunt]]>><<suspicion -5>><<asylumstatus 5>><<awareness -10>><<fameexhibitionism 10>><</link>><<exhibitionist5>><<llawareness>><<llsuspicion>><<ggcool>>
+			<br>
+		<<else>>
+			<<link [[Strip reluctantly|Asylum You Strip]]>><<suspicion -5>><<asylumstatus 5>><<awareness -10>><<stress 3>><<fameexhibitionism 10>><</link>><<llawareness>><<llsuspicion>><<ggcool>><<gstress>>
+			<br>
+		<</if>>
+		<<link [[Make <<him>> strip|Asylum They Strip]]>><<suspicion 5>><<asylumstatus -5>><</link>><<ggsuspicion>><<llcool>>
+		<br>
+	<</addinlineevent>>
+	<<if $hypnosisdisable is "f">>
+		<<addinlineevent "asylum_treatment_4" 1>>
+			<<npc Harper>><<person1>>
+			You are led into Harper's office. <<He>> waits for you inside.<<endevent>><<generate1>> There's a <<person1>><<person>> sat opposite. Another patient. "Thank you for joining us," the doctor says. "Please, take a seat."
+			<br><br>
+			You sit beside the <<person>>. Harper picks up a pen on the desk. "I want both of you to focus on this pen, and breathe deeply. There's nothing in the universe except this pen, my voice, and your own breath."
+			<br><br>
+			<<pass 5>>
+			This continues for several minutes. Harper somehow picks up on whenever one of your minds wanders and brings you back to focus. You feel something shift in your consciousness as you enter a trance.
+			<br><br>
+			"Good," the doctor says, looking at you. "I want you to get on your knees and use your mouth on <<his>> genitals. <<He>> will enjoy it. Is that clear?"
+			<br><br>
+			"Yes," the <<person>> says. "I will enjoy it."
+			<br><br>
+			<<link [[Obey|Asylum Hypnosis Oral]]>><<hypnotised 1>><<set $sexstart to 1>><<npcincr Harper dom 5>><<control 25>><<stress -12>><<awareness -10>><<suspicion -5>><</link>><<ggcontrol>><<llsuspicion>><<llawareness>><<lstress>>
+			<br>
+			<<link [[Resist|Asylum Hypnosis Resist]]>><<stress 6>><<suspicion 5>><<npcincr Harper dom -5>><</link>><<ggsuspicion>><<ggstress>>
+			<br>
+		<</addinlineevent>>
+	<</if>>
+	<<if $hypnosisdisable is "f">>
+		<<addinlineevent "asylum_treatment_5" 2>>
+			<<npc Harper>><<person1>>
+			You are led into Harper's office. <<He>> waits for you inside, sat at <<his>> desk. "Thank you for coming," <<he>> says. "Please, take a seat."
+			<br><br>
+			Once sat, Harper picks up a pen on <<his>> desk. "I want you to focus on this pen, and breathe deeply. There's nothing in the universe except this pen, my voice, and your own breath."
+			<br><br>
+			<<pass 5>>
+			This continues for several minutes. Harper somehow picks up on whenever your mind starts to wander and brings you back to focus. You feel something shift in your consciousness as you enter a trance.
+			<br><br>
+			"Good," the doctor says. "I want you to take off your clothes. We're going for a walk."
+			<br><br>
+			<<link [[Obey|Asylum Hypnosis Exhibitionism]]>><<hypnotised 1>><<npcincr Harper dom 5>><<control 25>><<stress -12>><<awareness -10>><<suspicion -5>><</link>><<ggcontrol>><<llsuspicion>><<llawareness>><<lstress>>
+			<br>
+			<<link [[Resist|Asylum Hypnosis Resist]]>><<stress 6>><<suspicion 5>><<npcincr Harper dom -5>><</link>><<ggsuspicion>><<ggstress>>
+			<br>
+		<</addinlineevent>>
+	<</if>>
+	<<addinlineevent "asylum_treatment_6" 1.5>>
+		<<npc Harper>><<person1>>
+		You are led into a windowless room. Doctor Harper waits beside a large machine. "Thank you for coming," <<he>> says. <<He>> presses a button. A compartment opens, large enough for you to fit. "Please lie down inside."
+		<br><br>
+		<<getinicon>><<link [[Get in|Asylum Machine]]>><<awareness -10>><<suspicion -5>><</link>><<llsuspicion>><<llawareness>>
+		<br>
+		<<refuseicon>><<link [[Refuse|Asylum Machine Refuse]]>><<suspicion 5>><</link>><<athleticsdifficulty 1 1000>><<ggsuspicion>><<ggstress>>
+		<br>
+	<</addinlineevent>>
+	<<if $hypnosisdisable is "f">>
+		<<addinlineevent "asylum_treatment_7" 1.5>>
+			<<npc Harper>><<person1>>
+			You are led into Harper's office. <<He>> waits for you inside, sat at <<his>> desk. "Thank you for coming," <<he>> says. "Please, take a seat."
+			<br><br>
+			Once sat, Harper picks up a pen on <<his>> desk. "I want you to focus on this pen, and breathe deeply. There's nothing in the universe except this pen, my voice, and your own breath."
+			<br><br>
+			<<pass 5>>
+			<<endevent>>
+			This continues for several minutes. Harper somehow picks up on whenever your mind starts to wander and brings you back to focus. You feel something shift in your consciousness as you enter a trance.
+			<br><br>
+			<<beastNEWinit 1 dog>>
+			<<if $monster is 1 or $bestialitydisable is "f">>
+				<<if $monster is 1>>
+					"Good," the doctor says. "Bring <<bhim>> in." A group of orderlies enter. One holds a <<beasttype>> on a leash, who appears to be panting heavily. <<bHis>> nude body is on full display. <<bHe>> strains to reach you. Harper turns to you. "We found <<bhim>> up near those farms," <<nnpc_he "Harper">> says. "<<bHes>> been misbehaving, and could use some "personal" attention. From a bitch in heat, more specifically. You can't wait to be <<bred>>." You feel an urge to bark.
+					<br><br>
 				<<else>>
-					<<set $player.virginity[_args[1]] to false>>
+					"Good," the doctor says. "Bring it in." A group of orderlies enter. One holds a dog on a leash. It strains to reach you. Harper turns to you. "You're a bitch in heat. You can't wait to be <<bred>>." You feel an urge to bark.
+					<br><br>
 				<</if>>
-				<!-- virgin purity loss -->
-				<<switch _args[1]>>
-					<<case "vaginal" "penile">>
-						<<if $templePromised isnot $_taker>>
-							<<purity -50>>
-						<</if>>
-					<<case "anal">><<purity -25>>
-					<<case "oral">><<purity -25>>
-					<<case "handholding">><<purity -10>>
-					<<case "kiss">><<purity -10>>
-				<</switch>>
-			<</if>>
 
-			<<if $player.virginity.temple is true and (_args[1] is "vaginal" or _args[1] is "penile") and $templePromised isnot $_taker>>
-				<<set $virginityProtected to false>>
-				<<set $player.virginity.temple to $_taker>>
-			<</if>>
-		<</if>>
-	<</if>>
-<</widget>>
-
-<<widget "takeTempleVirginity">>
-	<<if _args[1]>>
-		<<if _args[1] is "penile" and playerHasStrapon()>>
-			<!-- Do nothing -->
-		<<else>>
-			<<if $player.virginity.temple is true and (_args[1] is "vaginal" or _args[1] is "penile") and $templePromised isnot _args[0]>>
-				<<set $virginityProtected to false>>
-				<<set $player.virginity.temple to _args[0]>>
-			<</if>>
-		<</if>>
-	<</if>>
-<</widget>>
-
-<<widget "takeHandholdingVirginity">>
-	<<if typeof _args[0] === 'string' or _args[0] instanceof String>>
-		<<set $_fullDescription to _args[0]>>
-		<<if C.npc[_args[0]]>>
-			<<set $_type to C.npc[_args[0]].type>>
-		<<else>>
-			<<set $_type to _args[2]>>
-		<</if>>
-	<<else>>
-		<<set $_fullDescription to _args[0].fullDescription>>
-		<<set $_type to _args[0].type>>
-	<</if>>
-
-	<<switch _args[1]>>
-		<<case "romantic" "consensual">>
-			<<set _npcConsensualOverride to true>>
-		<<case "rape">>
-			<<set _npcConsensualOverride to true>>
-	<</switch>>
-	<<takeNPCVirginity $_fullDescription "handholding" "pc">>
-	<<unset _npcConsensualOverride>>
-
-	<<if $player.virginity.handholding is true>>
-		<<switch _args[1]>>
-			<<case "romantic">>
-				<span class="lewd">You aren't used to this kind of romantic handholding.</span><<arousal 2000>><<ggarousal>>
-				<<set _consensualOverride to true>>
-			<<case "rape">>
-				<span class="red">You feel horrible, being forced to hold hands like this.</span><<stress 40>><<ggstress>>
-				<<set _consensualOverride to false>>
-			<<case "consensual">>
-				<span class="green">Having your hand held feels nice.</span><<lltrauma>><<trauma -18>>
-				<<set _consensualOverride to true>>
-			<<case "tentacle">>
-				<<set $_handTentacle to _args[2] or "tentacle">>
-				<span class="lewd">You wonder what others would say about a $_handTentacle holding your hand, if they would even believe you.</span><<arousal 1000>>
-			<<default>>
-				<span class="blue">You feel nervous holding the hands of someone you're not close to.</span><<stress 20>><<gstress>>
-		<</switch>>
-		<<takeVirginity $_fullDescription "handholding">>
-	<</if>>
-	<<recordSperm `{target: "pc", spermOwner: _args[0], spermType: $_type, genital: "hand"}`>>
-	<<recordSperm `{target: _args[0], spermOwner: "pc", spermType: "human", genital: "hand"}`>>
-	<<if !$combat>><<fetishPregnancyImg>><</if>>
-<</widget>>
-
-<<widget "takeKissVirginity">>
-	<<if typeof _args[0] === 'string' or _args[0] instanceof String>>
-		<<set $_fullDescription to _args[0]>>
-		<<if C.npc[_args[0]]>>
-			<<set $_type to C.npc[_args[0]].type>>
-		<<else>>
-			<<set $_type to _args[2]>>
-		<</if>>
-	<<else>>
-		<<set $_fullDescription to _args[0].fullDescription>>
-		<<set $_type to _args[0].type>>
-	<</if>>
-
-	<<switch _args[1]>>
-		<<case "loveInterest" "romantic">>
-			<<set _npcConsensualOverride to true>>
-		<<case "rape" "loveRape">>
-			<<set _npcConsensualOverride to true>>
-	<</switch>>
-	<<takeNPCVirginity $_fullDescription "kiss" "pc">>
-	<<unset _npcConsensualOverride>>
-
-	<<if $player.virginity.kiss is true>>
-		<<if _args[0].type is "plant" and $backgroundTraits.includes("plantlover") and $nectar_timer lte 14>>
-			<<set $_kissType to "addiction">>
-		<<else>>
-			<<set $_kissType to _args[1]>>
-		<</if>>
-		<<switch $_kissType>>
-			<<case "loveInterest">>
-				<span class="lewd">You're happy your first kiss went to a love interest.</span><<arousal 3000>><<stress -12>><<trauma -12>><<ggarousal>><<llstress>>
-				<<if ($wraith.mimic isnot $_fullDescription)>><<earnFeat "First Kiss">><</if>>
-				<<set _consensualOverride to true>>
-			<<case "romantic">>
-				<span class="lewd">You're happy your first kiss was taken in such a romantic way.</span><<arousal 1500>><<stress -6>><<trauma -6>><<garousal>><<lstress>>
-				<<set _consensualOverride to true>>
-			<<case "rape">>
-				<span class="red">Your first kiss was stolen. You feel horrible.</span><<stress 40>><<gggstress>>
-				<<set _consensualOverride to false>>
-			<<case "loveRape">>
-				<span class="red">You didn't want your first kiss with <<nnpc_him $_fullDescription>> to be like this.</span><<stress 40>><<gggstress>>
-				<<set _consensualOverride to false>>
-			<<case "tentacle">>
-				<span class="lewd">You wonder what others would say about giving a tentacle your first kiss, if they would even believe you.</span><<arousal 3000>>
-			<<case "addiction">>
-				<span class="lewd">You're so relieved, the thought of giving away your first kiss like this hardly registers to you.</span><<arousal 1000>>
-			<<default>>
-				<span class="blue">You feel conflicted about giving away your first kiss like this.</span><<stress 20>><<ggstress>>
-		<</switch>>
-		<<takeVirginity $_fullDescription "kiss">>
-	<</if>>
-	<<recordSperm `{target: "pc", spermOwner: _args[0], spermType: $_type, genital: "kiss"}`>>
-	<<recordSperm `{target: _args[0], spermOwner: "pc", spermType: "human", genital: "kiss"}`>>
-	<<if !$combat>><<fetishPregnancyImg>><</if>>
-<</widget>>
-
-<<widget "takeKissVirginityNamed">>
-	<<switch _args[0]>>
-		<<case "Robin">>      <<set $_isLoveInterest to ($robinromance is 1)>>
-		<<case "Whitney">>    <<set $_isLoveInterest to ($whitneyromance is 1)>>
-		<<case "Kylar">>      <<set $_isLoveInterest to ($kylarenglish gte 1)>>
-		<<case "Sydney">>     <<set $_isLoveInterest to ($sydneyromance is 1)>>
-		<<case "Eden">>       <<set $_isLoveInterest to ($syndromeeden is 1)>>
-		<<case "Avery">>      <<set $_isLoveInterest to ($dateCount.Avery gte 3)>>
-		<<case "Black Wolf">> <<set $_isLoveInterest to ($syndromewolves is 1 and hasSexStat("deviancy", 3))>>
-		<<case "Great Hawk">> <<set $_isLoveInterest to ($syndromebird is 1)>>
-		<<case "Alex">>       <<set $_isLoveInterest to ($farm_stage gte 7 and $alex_countdown is undefined)>>
-		<<default>>           <<run $NPCNameList.includes(_args[0]) ? $_isLoveInterest = false : Errors.report("wrong argument passed to takeKissVirginityNamed: ", _args)>>
-	<</switch>>
-
-	<<set $_isConsensual to _args[1] or ($consensual is 1)>>
-
-	<<if $_isLoveInterest>>
-		<<set $_kissType to ($_isConsensual ? "loveInterest" : "loveRape")>>
-	<<else>>
-		<<set $_kissType to ($_isConsensual ? "consensual" : "rape")>>
-	<</if>>
-	<<takeKissVirginity _args[0] $_kissType>>
-<</widget>>
-
-/* Argument 0 is the npc, argument 1 is their virginity. */
-<<widget "takeNPCVirginity">>
-	<<set $_npcId to _args[0]>>
-	<<set $_vType to _args[1]>>
-	<!-- if the first argument is a name, find which npc has that name, else assume it is an index. -->
-	<<if typeof $_npcId is "string">>
-		<<set $_npcId to $NPCList.findIndex(npc => npc.fullDescription === $_npcId)>>
-	<</if>>
-	<<if $_npcId isnot undefined and $_npcId gte 0>>
-		<<set $_npc to $NPCList[$_npcId]>>
-		<<set $_straponvirginityIgnore to ($_vType is "penile" and npcHasStrapon($_npcId))>>
-	<</if>>
-
-	<<if $_npc and $_vType and $_npc.virginity and $_npc.virginity[$_vType] and ($wraith.mimic isnot $_npc.fullDescription) and !$_straponvirginityIgnore>>
-		<<if ($_vType is "vaginal" or $_vType is "penile") and $_npc.virginity.temple is true and $templePromised isnot $_npc.fullDescription>>
-			<<set $_npc.virginity.temple to false>>
-			<<if !$activeNightmare and $NPCNameList.indexOf($_npc.fullDescription) isnot -1>>
-				<<set $NPCName[$NPCNameList.indexOf($_npc.fullDescription)].virginity.temple to false>>
-			<</if>>
-		<</if>>
-
-		/* note: virginity must be exactly equal to true; only true means that they still have their virginity. */
-		<<if $_npc.virginity[$_vType] is true>>
-			<<personselect $_npcId>>
-			<<set $_npc.virginity[$_vType] to "player">>
-			<<switch $_vType>>
-				<<case "vaginal">>
-					<<set $speechNPCVaginaVirgin to 1>>
-					<span class="pink">You feel <<his>> hymen tear, forever robbing <<him>> of <<his>> purity.</span>
-					<<if $demon gte 6>>
-						<span class="lewd">You feel a surge of pleasure unlike any other as you defile <<him>> and spread your impurity.</span>
-						<<stress -50>><<trauma -50>><<lllstress>><<llltrauma>>
-					<</if>>
-					<<arousal 2000>><<ggarousal>>
-					<br>
-				<<case "penile">>
-					<<set $speechNPCPenisVirgin to 1>>
-					<span class="pink">You feel <<his>> foreskin separate from <<his>> glans, forever robbing <<him>> of <<his>> purity.</span>
-					<<if $demon gte 6>>
-						<span class="lewd">You feel a surge of pleasure unlike any other as you defile <<him>> and spread your impurity.</span>
-						<<stress -50>><<trauma -50>><<lllstress>><<llltrauma>>
-					<</if>>
-					<<arousal 2000>><<ggarousal>>
-					<br>
-				<<case "anal">>
-					<<set $speechNPCAnusVirgin to 1>>
-					<span class="pink">It's a tight fit. This is probably <<his>> first time doing this.</span>
-					<<arousal 2000>><<ggarousal>>
-					<br>
-				<<case "oral">>
-					<<set $speechNPCOralVirgin to 1>>
-					<span class="pink"><<He>> looks surprised, as if <<he>> wasn't expecting the taste. This is probably <<his>> first time.</span>
-					<<arousal 1500>><<ggarousal>>
-					<br>
-				<<case "kiss">>
-					<<set $speechNPCKissVirgin to 1>>
-					<<set _npcKissVirginTemp to 1>>
-				<<case "handholding">>
-					<<set $speechNPCHandholdingVirgin to 1>>
-					<span class="green"><<His>> hand clenches, and <<he>> looks slightly nervous.</span>
-				<<default>>
-			<</switch>>
-
-			<<if $activeNightmare>>
-				<<if $_npc.fullDescription is "Sydney" and ($_vType is "vaginal" or $_vType is "penile")>>
-					<<displayFeatFake "Sydney the Pure Hearted">>
-				<</if>>
+				<<link [[Present yourself|Asylum Hypnosis Dog]]>><<hypnotised 1>><<set $sexstart to 1>><<npcincr Harper dom 5>><<control 25>><<stress -12>><<awareness -10>><<suspicion -5>><</link>><<ggcontrol>><<llsuspicion>><<llawareness>><<lstress>>
+				<br>
+				<<link [[Resist|Asylum Hypnosis Dog Resist]]>><<stress 6>><<suspicion 5>><<npcincr Harper dom -5>><</link>><<ggsuspicion>><<ggstress>>
+				<br>
 			<<else>>
-				<<run $virginTaken[$_vType].pushUnique($_npc.fullDescription)>>
-				<<set $_i to $NPCNameList.indexOf($_npc.fullDescription)>>
-				<<if $_i isnot -1>>
-					<<if $_npc.fullDescription is "Sydney" and ($_vType is "vaginal" or $_vType is "penile")>>
-						<<earnFeat "Sydney the Pure Hearted">>
-					<</if>>
-					<<set $NPCName[$_i].virginity to $_npc.virginity>>
-					<<if !$NPCName[$_i].virginityDetails>>
-						<<set $NPCName[$_i].virginityDetails to {}>>
-					<</if>>
-					<<set $NPCName[$_i].virginityDetails[$_vType] to {
-						timestamp: Time.date.timeStamp,
-						taker: "pc",
-						passage: $passage,
-					}>>
-					<<if $combat>>
-						<<set $NPCName[$_i].virginityDetails[$_vType].consensual to !!$consensual>>
-						<<set $NPCName[$_i].virginityDetails[$_vType].position to $position>>
-					<<elseif _npcConsensualOverride isnot undefined>>
-						<<set $NPCName[$_i].virginityDetails[$_vType].consensual to _npcConsensualOverride>>
-						<<unset _npcConsensualOverride>>
-					<</if>>
-					<<if $_vType is "penile">>
-						<<set $NPCName[$_i].virginityDetails[$_vType].npcPenisSize to $NPCName[$_i].penissize>>
-						<<set $NPCName[$_i].virginityDetails[$_vType].npcPenisdesc to $NPCName[$_i].penisdesc>>
-					<<elseif ["vaginal", "anal", "oral"].includes($_vType)>>
-						<<if playerHasStrapon() or $player.penisExist>>
-							<<set $NPCName[$_i].virginityDetails[$_vType].playerPenisSize to playerPenisSize()>>
-						<</if>>
-					<</if>>
-				<</if>>
+				<<endevent>>
+				<<npc Harper>><<person1>>
+				"Good," the doctor says. "I want you to take off your clothes. We're going for a walk."
+				<br><br>
+				<<link [[Obey|Asylum Hypnosis Exhibitionism]]>><<hypnotised 1>><<npcincr Harper dom 5>><<control 25>><<stress -12>><<awareness -10>><<suspicion -5>><</link>><<ggcontrol>><<llsuspicion>><<llawareness>><<lstress>>
+				<br>
+				<<link [[Resist|Asylum Hypnosis Resist]]>><<stress 6>><<suspicion 5>><<npcincr Harper dom -5>><</link>><<ggsuspicion>><<ggstress>>
+				<br>
 			<</if>>
-		<</if>>
+		<</addinlineevent>>
 	<</if>>
-<</widget>>
-
-<<widget "NPCVirginityTakenByOther">>
-	<!-- Argument 0 is the npc, argument1 is the virginity, argument 2 is the thing taking the virginity -->
-	<!-- example usage: <<NPCVirginityTakenByOther "Robin" "vaginal" $NPCList[0].fullDescription>> -->
-	<!-- example usage: <<NPCVirginityTakenByOther 0 "anal" $tentacles[$tentacleindex].fullDesc>> -->
-	<<set $_npcId to _args[0]>>
-	<<set $_vType to _args[1]>>
-	<<set $_takerDesc to _args[2]>>
-	<<set _npcVirgin to {}>>
-	<!-- if the first argument is a name, find which npc has that name, else assume it is an index. -->
-	<<if typeof $_npcId is "string">>
-		<<set $_npc to $NPCList.find(npc => npc.fullDescription === $_npcId)>>
-		<<if $_npc is undefined>>
-			<<set $_npc to $NPCName.find(npc => npc.description === $_npcId)>>
-			<<set $_isNamedOnly to ($_npc isnot undefined)>>
-		<</if>>
-	<<elseif $_npcId isnot undefined>>
-		<<set $_npc to $NPCList[$_npcId]>>
-	<</if>>
-
-	<<if $_npc and $_npc.penisdesc && $_npc.penisdesc.includes("strap-on")>>
-		<<set $_straponvirginityIgnore to ($_vType is "penile")>>
-	<</if>>
-
-	<<if $_npc and $_vType and $_npc.virginity and $_npc.virginity[$_vType] is true>>
-		<!-- note: virginity must be exactly equal to true; only true means that they still have their virginity. -->
-		<!-- note: NTR is never going to be a thing, but we record this bc it might be useful to remember HOW an npc's virginity was lost, and to what. beast/tentacle/etc -->
-		<<set $_npc.virginity[$_vType] to $_takerDesc>>
-		<<if !$_npc.virginityDetails>>
-			<<set $_npc.virginityDetails to {}>>
-		<</if>>
-		<<set $_npc.virginityDetails[$_vType] to {
-			timestamp: Time.date.timeStamp,
-			taker: $_takerDesc,
-			passage: $passage,
-		}>>
-		<<if $combat>>
-			<<set $_npc.virginityDetails[$_vType].consensual to !!$consensual>>
-			<<set $_npc.virginityDetails[$_vType].position to $position>>
-		<</if>>
-		<<if $_vType is "penile">>
-			<<set $_npc.virginityDetails[$_vType].npcPenisSize to $_npc.penissize>>
-			<<set $_npc.virginityDetails[$_vType].npcPenisdesc to $_npc.penisdesc>>
-		<<elseif ["vaginal", "anal", "oral"].includes($_vType)>>
-			<<set $_npcIndex to $NPCNameList.indexOf($_takerDesc)>>
-			<<if $_npcIndex isnot -1>>
-				<<set $_npc.virginityDetails[$_vType].npcPenisSize to $NPCName[$_npcIndex].penissize>>
-				<<set $_npc.virginityDetails[$_vType].npcPenisdesc to $NPCName[$_npcIndex].penisdesc>>
+	<<addinlineevent "asylum_treatment_8" 1>>
+		<<npc Harper>><<generate2>><<generate3>>
+		You enter Doctor Harper's office. <<person1>><<He>> sits behind <<his>> desk. A <<person2>><<person>> and <<person3>><<person>> sit in front of <<him>>, both in white coats. They turn to regard you.
+		<br><br>
+		"Thank you for coming," Harper says. "I have something special for you today. A new drug. My colleagues here would like to observe its effects. Here." <<person1>><<He>> stands and removes a sheet from a nearby chair. There are straps on the arms and legs. "Please sit."
+		<<person3>>
+		<br><br>
+		<<link [[Sit|Asylum Pill Sit]]>><<awareness -10>><<suspicion -5>><<hallucinogen 80>><</link>><<llsuspicion>><<llawareness>>
+		<br>
+		<<link [[Refuse|Asylum Pill Refuse]]>><<suspicion 5>><</link>><<ggsuspicion>><<ggstress>>
+		<br>
+	<</addinlineevent>>
+	<<addinlineevent "asylum_treatment_9" 1>>
+		<<npc Harper>><<person1>>
+		You are led into Harper's office. <<He>> waits for you inside, sat at <<his>> desk. "Thank you for coming," <<he>> says. "Please, take a seat."
+		<br><br>
+		You sit down in a chair in front of <<his>> desk. Harper pulls something out from a drawer. It's a folded piece of paper. Dark splotches bleed through it from within.
+		<br><br>
+		"This is something called an inkblot test," <<he>> explains. "I want you to tell me what this shape reminds you of."
+		<br><br>
+		<<He>> unfolds the paper. The two sides stick together, but come undone with a crackle. A symmetrical black blob is painted on the inside.
+		<<if $awareness gte 400>>
+			The strokes twist together across the page, tangling over one another. They converge into total darkness, like a hole punched through the paper, or the mouth of a terrible creature. You stare at it, unable to tear your eyes away. <<gstress>><<stress 6>><<gtrauma>><<trauma 6>>
+		<<elseif $awareness gte 200>>
+			You stare at the paper, trying to discern the shape. The blob looks suspiciously <<if $NPCList[0].penis isnot "none">>phallic.<<else>>yonic.<</if>>
+			<<if $purity gte 1000 or $angel gte 6>>
+				You wonder if you're just being dirty-minded.<<gstress>><<stress 1>>
 			<<else>>
-				<<run $NPCList.forEach(npc => {
-					if (npc.fullDescription is $_takerDesc) $_npc.virginityDetails[$_vType].npcPenisSize to npc.penissize;
-					if (npc.fullDescription is $_takerDesc) $_npc.virginityDetails[$_vType].npcPenisdesc to npc.penisdesc;
-				})>>
+				The longer you stare at it, the more certain you are that it looks like a <<if $NPCList[0].penis isnot "none">>penis.<<else>>pussy.<</if>>
 			<</if>>
-		<</if>>
-
-		<!-- if the npc is named, this will find and update their entry in $NPCName -->
-		<<if !$_isNamedOnly>>
-			<<set $_i to $NPCNameList.indexOf($_npc.fullDescription)>>
-			<<if $_i isnot -1>>
-				<<set $NPCName[$_i].virginity to $_npc.virginity>>
-				<<set $NPCName[$_i].virginityDetails ||= {}>>
-
-				<!-- Doubled up due to the way this widget works -->
-				<<set $NPCName[$_i].virginityDetails[$_vType] to {
-					timestamp: Time.date.timeStamp,
-					taker: $_takerDesc,
-					passage: $passage,
-				}>>
-				<<if $combat>>
-					<<set $NPCName[$_i].virginityDetails[$_vType].consensual to !!$consensual>>
-					<<set $NPCName[$_i].virginityDetails[$_vType].position to $position>>
-				<</if>>
-				<<if $_vType is "penile">>
-					<<set $NPCName[$_i].virginityDetails[$_vType].npcPenisSize to $NPCName[$_i].penissize>>
-					<<set $NPCName[$_i].virginityDetails[$_vType].npcPenisdesc to $NPCName[$_i].penisdesc>>
-				<<elseif ["vaginal", "anal", "oral"].includes($_vType)>>
-					<<run console.log($_takerDesc)>>
-					<<set $_npcIndex to $NPCNameList.indexOf($_takerDesc)>>
-					<<if $_npcIndex isnot -1>>
-						<<set $NPCName[$_i].virginityDetails[$_vType].npcPenisSize to $NPCName[$_npcIndex].penissize>>
-						<<set $NPCName[$_i].virginityDetails[$_vType].npcPenisdesc to $NPCName[$_npcIndex].penisdesc>>
-					<<else>>
-						<<run $NPCList.forEach(npc => {
-							if (npc.fullDescription is $_takerDesc) $NPCName[$_i].virginityDetails[$_vType].npcPenisSize to npc.penissize;
-							if (npc.fullDescription is $_takerDesc) $NPCName[$_i].virginityDetails[$_vType].npcPenisdesc to npc.penisdesc;
-						})>>
-					<</if>>
-				<</if>>
-			<</if>>
-		<</if>>
-
-		<!-- temporary variables to use for scenes. -->
-		<<set _npcVirgin[$_vType] to true>>
-	<</if>>
-<</widget>>
-
-
-<<widget "setupMidOrgasm">>
-	<<if $setupMidOrgasm isnot undefined and $enemyarousal gte $enemyarousalmax>>
-		<<set _midOrgasm to false>>
-		<<for _n to 0; _n lt $NPCList.length;_n++>>
-			<<if $NPCList[_n].maxOrgasms gt 1>>
-				<<set $NPCList[_n].orgasms++>>
-			<</if>>
-			<<if $NPCList[_n].orgasms lt $NPCList[_n].maxOrgasms>>
-				<<set _midOrgasm to true>>
-			<</if>>
-		<</for>>
-		<<if _midOrgasm is true>>
-			<<set $enemyarousal to $enemyarousalmax / 2>>
-			<<set $finish to 0>>
-			<<set $ejaculatingMid to true>>
-		<</if>>
-	<</if>>
-<</widget>>
-
-<<widget "combatTrainAdvance">>/*For use after a beast/monster in a train is finished with their turn. Loads next in line into $NPCList[0]. Loads them all back into $NPCList if at the end of the train.*/
-	<<clearnpc>>
-	<<if $combatTrain.length gt 0>>
-		<<set $combatTrain.length-->>
-		<<set $combatTrain.active += 1>>
-		<<loadNPC 0 `"beast_" + $combatTrain.active`>>
-		<<if $NPCList[0].monster is "monster">>
-			<<set $monster to 1>>
 		<<else>>
-			<<set $monster to 0>>
+			You tilt your head, looking at the paper. The shape looks like a <<if $NPCList[0].penis isnot "none">>rocket taking off.<<else>>beautiful butterfly.<</if>>
 		<</if>>
-	<<else>>
-		<<for _e_n to 0; _e_n lt $combatTrain.total_length + 1; _e_n++>>
-			<<loadNPC _e_n `"beast_" + _e_n`>>
-			<<clearNPC `"beast_" + _e_n`>>
-		<</for>>
-	<</if>>
-	<<set $active_enemy to 0>>
-	<<unset $hypnosis_deviancy_check>>
-	<<unset $otherFilled>>
-	<<unset $leglocktarget>>
+		<br><br>
+		<<link [[Answer honestly|Asylum Inkblot Answer Honestly]]>><<trauma -6>><<suspicion -5>><</link>><<llsuspicion>><<llawareness>><<lltrauma>>
+		<br>
+		<<link [[Refuse to answer|Asylum Inkblot Answer Evasively]]>><<stress 3>><</link>><<lawareness>><<gstress>>
+		<br>
+	<</addinlineevent>>
+	<<runeventpool>>
+<</if>>
 <</widget>>
 
-<<widget "beastTrainGenerate">>/*Saves all beasts/monsters in $NPCList, then loads the first into slot 0.*/
-	<<set _enemyno to $enemyno - 1>>
-	<<set $combatTrain to {
-		length: _enemyno,
-		total_length: _enemyno,
-		active: 0,
-		pronouns: [],
-		monsters: [],
-		beastTypes: []
-	}>>
-	<<for _e_n to 0; _e_n lt $enemyno; _e_n++>>
-		<<saveNPC _e_n `"beast_" + _e_n`>>
-		<<set $combatTrain.beastTypes.push($NPCList[_e_n].type)>>
-		<<set $combatTrain.pronouns.push($NPCList[_e_n].pronoun)>>
-		<<set $combatTrain.monsters.push($NPCList[_e_n].monster)>>
-	<</for>>
-	<<clearnpc>>
-	<<loadNPC 0 beast_0>>
-<</widget>>
+<<widget "asylumassessment">>
+	You enter the doctor's office.<<npc Harper>><<person1>>
+	<<if isPregnancyEnding()>>
+		<<pregnancyPassout "asylumHarper">>
+	<<elseif $innocencestate is 1>>
+		<<npcincr Harper love 5>><<npcincr Harper dom 5>><<set $asyluminnocence to 1>>
 
-/* Cannot remove as it is used in combat logic */
-<<widget "leg_position">>
-	<<set $_parts to [$anususe, $vaginause, $chestuse, $mouthuse]>>
-	<<if $machine and $machine.tattoo and ["left_thigh", "right_thigh"].includes($machine.tattoo.use)>>
-		<<set _leg_position to "up">>
-	<<elseif $_parts.includes("penis") or $_parts.includes(1)>>
-		<<set _leg_position to "up">>
-	<<else>>
-		<<set _leg_position to "down">>
-	<</if>>
-<</widget>>
+		<<He>> puts down <<his>> clipboard and smiles. "Your treatment is finished," <<he>> says. "You're ready to be a functioning member of society. I'll have special pills sent to your home."
+		<<set $sexStats.pills["pills"]["asylum\'s prescription"].owned to 14>><<set $asylummedicated to 0>>
+		<<He>> rises to <<his>> feet and pulls the curtains at the window closed. "Stand up."
+		<br><br>
 
-/* Should ideally only be used if you're sure one npc is in this position */
-/* Selects the NPC that has the given body part (chest, mouth, vagina) set to the given value */
-/* Useful when you know one of them is in a given position by looking at the PC, but aren't sure which */
-<<widget "selectNpcWithPartInPosition">>
-	<<if _args[0] and _args[1]>>
-		<<set $_part to _args[0]>>
-		<<set $_position to _args[1]>>
-		<<unset _npc>>
-		<<for _j = 0; _j lt $enemynomax; _j++>>
-			<<if $_part is "hand" and ($NPCList[_j]["lefthand"] is $_position or $NPCList[_j]["righthand"] is $_position)>>
-				<<personselect _j>>
-				<<set _npc to $NPCList[_j]>>
-				<<break>>
-			<<elseif $NPCList[_j][$_part] is $_position>>
-				<<personselect _j>>
-				<<set _npc to $NPCList[_j]>>
-				<<break>>
-			<</if>>
-		<</for>>
-		<<if _index isnot undefined>>
-			<<personselect _j>>
+		Once stood, <<he>> pushes you back over the desk.
+		<<if $NPCList[0].penis isnot "none">>
+			<<He>> steps between your legs and leans forward,
 		<<else>>
-			<!-- Should we throw an error? If we suspect an NPC part is in this position and don't find one, is that a bug? -->
+			<<He>> climbs atop and straddles you,
 		<</if>>
-	<<else>>
-		<<run throw new Error("selectNpcWithPartInPosition used with incorrect number of variables (or one is undefined)")>>
-	<</if>>
-<</widget>>
 
-<<widget "selectNpcWithPartInPositionAnus">>
-	<<if _args[0]>>
-		<<unset _npc>>
-		<<for _j = 0; _j lt $enemynomax; _j++>>
-			<<if $NPCList[_j].penis is _args[0] or $NPCList[_j].vagina is _args[0]>>
-				<<personselect _j>>
-				<<set _npc to $NPCList[_j]>>
-				<<break>>
-			<</if>>
-		<</for>>
-	<</if>>
-<</widget>>
+		groping at your clothes with shaking fingers, trying to take them off. The professional air <<he>> carried is gone. <<He>> laughs, giggles really. "I-I should be the first to experience my handiwork. It's only fair."
+		<br><br>
 
-<<widget "cover_end">>
-	<<if $enemyarousal gte $enemyarousalmax>>
-		<<exit>>
-	<</if>>
-	<<if $leftarm is "vagina" or $rightarm is "vagina">>
-		<<set $vaginause to 0>>
-	<<elseif $leftarm is "coverpenis" or $rightarm is "coverpenis">>
-		<<set $penisuse to 0>>
-	<<elseif $leftarm is "anus" or $rightarm is "anus">>
-		<<set $anususe to 0>>
-	<<elseif $leftarm is "face" or $rightarm is "face">>
-		<<set $face to 0>>
-	<</if>>
-<</widget>>
+		<<link [[Next|Asylum Harper Sex]]>><<set $molestationstart to 1>><</link>>
+		<br>
 
-/* args[0] - 0-5 for npc, or "player", args[1] fo article (the, it, etc)*/
-<<widget "condomDesc">><<silently>>
-	<<if _args[1] is "it">>
-		<<set _text_output to "it">>
-	<<elseif _args[0] isnot "player" and !between(_args[0], 0, 5)>>
-		<<run Errors.report("Bad arguments for <<condomDesc>> ", "args: " + JSON.stringify(_args) + "; stack: " + Utils.GetStack())>>
-		<span class="error"><<print "Bad arguments for condomDesc. args: " + JSON.stringify(_args) + "; stack: " + Utils.GetStack()>></span>
-	<<else>>
-		<<set $_condomArticle to (_args[1] ? _args[1] : "a")>>
-		<<set $_condom to (_args[0] ? _args[0] : 0)>>
-		<<set _text_output to $_condomArticle>>
-		<<if $_condom is "player" and $player.condom>>
-			<<set $_condomDesc to clone($player.condom)>>
-		<<elseif $NPCList[$_condom].condom>>
-			<<set $_condomDesc to clone($NPCList[$_condom].condom)>>
+	<<elseif $trauma lte $traumamax / 10>>
+		<<set $asylumtrauma to 1>> /* unused */
+
+		<<He>> puts down <<his>> clipboard and frowns. "Your treatment isn't finished," <<he>> says. "But you seem to have recovered regardless. I can't justify keeping you here." <<He>> rises to <<his>> feet and pulls the curtains at the window closed.
+		<br><br>
+
+		"Now that you're better..." <<He>> steps around the desk. "This might be the last time we see each other." <<He>> gropes your clothing. The professional air <<he>> carried is gone. <<He>> laughs as <<he>> tries to kiss you.
+		<br><br>
+
+		<<link [[Let it happen|Asylum Harper Sex]]>><<npcincr Harper love 5>><<set $sexstart to 1>><</link>><<promiscuous1>>
+		<br>
+		<<link [[Shove away|Asylum Harper Shove]]>><<npcincr Harper love -1>><</link>>
+		<br>
+
+	<<elseif $asylumassessmentprogress lte 0>>
+		<<set $asylumassessmentprogress += 1>>
+		Harper stares at you across the desk. "Let's talk about your exposure fetish," <<he>> says. "You've been displaying your body in inappropriate ways, then claiming others stripped you. You're ashamed of your feelings."
+		<br><br>
+
+		<<if $asylumdistracted is 1>>
+			<<link [[Attack|Asylum Fight]]>><<suspicion 15>><<trauma -6>><<stress -6>><<set $fightstart to 1>><</link>><<gggsuspicion>><<gggsuspicion>><<ltrauma>><<lstress>>
+			<br>
 		<<else>>
-			<<set _text_output to "ERROR: Condom $_condom invalid">>
+			<<link [[Attack|Asylum Punish]]>><<suspicion 15>><<trauma -6>><<stress -6>><</link>><<gggsuspicion>><<ltrauma>><<lstress>>
+			<br>
 		<</if>>
-		<<if $_condomDesc.colour is "lblue">>
-			<<set $_colourName to "light blue">>
+		<<if $asylumkeycard isnot 1 and $leftarm isnot "bound" and $rightarm isnot "bound">>
+			<<set $skulduggerydifficulty to 900 + (20 * $suspicion)>>
+			<<link [[Steal keycard|Asylum Keycard]]>><</link>><<skulduggerydifficulty>> <<note "This will be easier with low suspicion" "italic">>
+			<br>
+		<</if>>
+		<<link [[Insist that isn't true|Asylum Exhibit Meek]]>><<awareness -1>><<stress 3>><</link>><<lawareness>><<gstress>>
+		<br>
+		<<link [[Say you aren't sure|Asylum Exhibit Sub]]>><<trauma -6>><<suspicion -5>><<awareness -10>><</link>><<llsuspicion>><<llawareness>><<ltrauma>>
+		<br>
+
+	<<elseif $asylumassessmentprogress lte 1 and $tentaclerapestat gte 1>>
+		<<set $asylumassessmentprogress += 1>>
+		Harper stares at you across the desk. "In your sleep you talk about being attacked by monsters with tentacles," <<he>> says. "Creatures like that don't exist. If someone claimed to have been molested by a creature no one else can see, would you believe them?"
+		<br><br>
+
+		<<if $asylumdistracted is 1>>
+			<<link [[Attack|Asylum Fight]]>><<suspicion 15>><<trauma -6>><<stress -6>><<set $fightstart to 1>><</link>><<gggsuspicion>><<ltrauma>><<lstress>>
+			<br>
 		<<else>>
-			<<set $_colourName to $_condomDesc.colour>>
+			<<link [[Attack|Asylum Punish]]>><<suspicion 15>><<trauma -6>><<stress -6>><</link>><<gggsuspicion>><<ltrauma>><<lstress>>
+			<br>
 		<</if>>
-		<<if $_condomArticle is "a">>
-			<<set _text_output += (["a","e","i","o","u","A","E","I","O","U"].some(letter => $_colourName.startsWith(letter)) ? "n " + $_colourName + " " : " " + $_colourName + " ")>>
-		<<elseif $_condomArticle is "the">>
-			<<set _text_output += " ">>
+		<<if $asylumkeycard isnot 1 and $leftarm isnot "bound" and $rightarm isnot "bound">>
+			<<set $skulduggerydifficulty to 900 + (20 * $suspicion)>>
+			<<link [[Steal keycard|Asylum Keycard]]>><</link>><<skulduggerydifficulty>> <<note "This will be easier with low suspicion" "italic">>
+			<br>
+		<</if>>
+		<<link [[Insist they are real|Asylum Tentacles Meek]]>><<awareness 1>><<stress 3>><</link>><<gawareness>><<gstress>>
+		<br>
+		<<link [[Say you aren't sure|Asylum Tentacles Sub]]>><<trauma -6>><<suspicion -5>><<awareness -10>><</link>><<llsuspicion>><<llawareness>><<ltrauma>>
+		<br>
+
+	<<elseif $asylumassessmentprogress lte 2 and $beastrapestat gte 1>>
+		<<set $asylumassessmentprogress += 1>>
+		<!-- Modified for monster people -->
+		Harper stares at you across the desk.
+		<<if $bestialitydisable is "f">>
+			"In your sleep you talk about being attacked by animals," <<he>> says. "Sexually attacked. Animals don't behave like that. You've been abusing innocent creatures, haven't you?"
 		<<else>>
-			<<set _text_output += " " + $_colourName + " ">>
+			"In your sleep you talk about being attacked by monster-people," <<he>> says. "Sexually attacked. These types of beings do not exist. You made yourself believe they possess human-like features. In reality, you've been abusing innocent animals for your own pleasure. Am I wrong?"
 		<</if>>
-		<<if $_condomDesc.type isnot "plain">>
-			<<set _text_output += $_condomDesc.type + " ">>
-		<</if>>
-		<<set _text_output += "condom">>
-	<</if>>
-<</silently>><<print _text_output>><</widget>>
+		<br><br>
 
-/* args[0] - 0-5 for npc, args[1] "player" if the npc is equipping it on the player */
-<<widget "equipNPCCondom">>
-	<<set $_condomnpc to (_args[0] ? _args[0] : 0)>>
-	<<if $NPCList[$_condomnpc].condom>>
-		<<if _args[1] is "player">>
-			<<set $player.condom to clone($NPCList[$_condomnpc].condom)>>
-			<<set $player.condom.worn to true>>
-			<<run delete $player.condom.willUse>>
-			<<set $NPCList[$_condomnpc].condom to false>>
+		<<if $asylumdistracted is 1>>
+			<<link [[Attack|Asylum Fight]]>><<suspicion 15>><<trauma -6>><<stress -6>><<set $fightstart to 1>><</link>><<gggsuspicion>><<gggsuspicion>><<ltrauma>><<lstress>>
+			<br>
 		<<else>>
-			<<set $NPCList[$_condomnpc].condom.worn to true>>
+			<<link [[Attack|Asylum Punish]]>><<suspicion 15>><<trauma -6>><<stress -6>><</link>><<gggsuspicion>><<ltrauma>><<lstress>>
+			<br>
 		<</if>>
-		<<set $NPCList[$_condomnpc].condomAsk to true>>
+		<<if $asylumkeycard isnot 1 and $leftarm isnot "bound" and $rightarm isnot "bound">>
+			<<set $skulduggerydifficulty to 900 + (20 * $suspicion)>>
+			<<link [[Steal keycard|Asylum Keycard]]>><</link>><<skulduggerydifficulty>> <<note "This will be easier with low suspicion" "italic">>
+			<br>
+		<</if>>
+		<<link [[Insist that isn't true|Asylum Beast Meek]]>><<awareness -1>><<stress 3>><</link>><<lawareness>><<gstress>>
+		<br>
+		<<link [[Say you aren't sure|Asylum Beast Sub]]>><<trauma -6>><<suspicion -5>><<awareness -10>><</link>><<llsuspicion>><<llawareness>><<ltrauma>>
+		<br>
+
+	<<elseif $asylumassessmentprogress lte 3>>
+		<<set $asylumassessmentprogress += 1>>
+		Harper stares at you across the desk. "There are marks on your body," <<he>> says. "You did this to yourself, didn't you."
+		<br><br>
+
+		<<if $asylumdistracted is 1>>
+			<<link [[Attack|Asylum Fight]]>><<suspicion 15>><<trauma -6>><<stress -6>><<set $fightstart to 1>><</link>><<gggsuspicion>><<gggsuspicion>><<ltrauma>><<lstress>>
+			<br>
+		<<else>>
+			<<link [[Attack|Asylum Punish]]>><<suspicion 15>><<trauma -6>><<stress -6>><</link>><<gggsuspicion>><<ltrauma>><<lstress>>
+			<br>
+		<</if>>
+		<<if $asylumkeycard isnot 1 and $leftarm isnot "bound" and $rightarm isnot "bound">>
+			<<set $skulduggerydifficulty to 900 + (20 * $suspicion)>>
+			<<link [[Steal keycard|Asylum Keycard]]>><</link>><<skulduggerydifficulty>> <<note "This will be easier with low suspicion" "italic">>
+			<br>
+		<</if>>
+		<<link [[Insist that isn't true|Asylum Hurt Meek]]>><<awareness -1>><<stress 3>><</link>><<lawareness>><<gstress>>
+		<br>
+		<<link [[Say you aren't sure|Asylum Hurt Sub]]>><<trauma -6>><<suspicion -5>><<awareness -10>><</link>><<llsuspicion>><<llawareness>><<ltrauma>>
+		<br>
+
 	<<else>>
-		<span class="red">ERROR: NPC condom $_condomnpc not defined.</span>
+		<<set $asylumassessmentprogress to 0>>
+		Harper stares at you across the desk. "In your sleep you talk about being raped and molested. But that isn't what happens, is it?" <<he>> says. "You approach and seduce people willingly. You call it rape because you're ashamed."
+		<br><br>
+
+		<<if $asylumdistracted is 1>>
+			<<link [[Attack|Asylum Fight]]>><<suspicion 15>><<trauma -6>><<stress -6>><<set $fightstart to 1>><</link>><<gggsuspicion>><<gggsuspicion>><<ltrauma>><<lstress>>
+			<br>
+		<<else>>
+			<<link [[Attack|Asylum Punish]]>><<suspicion 15>><<trauma -6>><<stress -6>><</link>><<gggsuspicion>><<ltrauma>><<lstress>>
+			<br>
+		<</if>>
+		<<if $asylumkeycard isnot 1 and $leftarm isnot "bound" and $rightarm isnot "bound">>
+			<<set $skulduggerydifficulty to 900 + (20 * $suspicion)>>
+			<<link [[Steal keycard|Asylum Keycard]]>><</link>><<skulduggerydifficulty>><<note "This will be easier with low suspicion" "italic">>
+			<br>
+		<</if>>
+		<<link [[Insist that isn't true|Asylum Rape Meek]]>><<awareness -1>><<stress 3>><</link>><<lawareness>><<gstress>>
+		<br>
+		<<link [[Say you aren't sure|Asylum Rape Sub]]>><<trauma -6>><<suspicion -5>><<awareness -10>><</link>><<llsuspicion>><<llawareness>><<ltrauma>>
+		<br>
+
 	<</if>>
 <</widget>>
 
-/* args[0] - 0-5 for npc, args[1] "player" if the npc is removing it from the player */
-<<widget "removeNPCCondom">>
-	<<set $_condomnpc to (_args[0] ? _args[0] : 0)>>
-	<<if _args[1] is "player">>
-		<<set $player.condom to false>>
+<<widget "asylumend">>
+	<<set $asylum to 0>>
+<</widget>>
+
+<<widget "asylumpunish">>
+	<<endevent>><<npc Harper>><<person1>><<set $asylumbound to 2>>
+
+	<<if $leftarm is "bound" and $rightarm is "bound">>
+		"Take <<phim>> to the room," Harper says. "Make sure <<pher>> arms are bound tight."
+		<br><br>
+		<<if $leftarm is "bound" and $rightarm is "bound">>
+			They push you to an empty wing of the asylum, through one of the doors marked "Staff Only."
+		<<else>>
+			They force you into a jacket and push you to an empty wing of the asylum.
+			<<bind>><<upperwear 35>>
+		<</if>>
+		Most lights here don't work, and those that do flicker to a strange rhythm.
+		<br><br>
+		You come to a tall metal door. They open it, revealing a pitch black room beyond. They shove you in, and slam the door behind you.
+		<br><br>
+		There's just enough space to sit. You wait in total silence.
+		<br><br>
+		<<link [[Wait (1:00)|Asylum Room]]>><<pass 60>><</link>>
+		<br>
 	<<else>>
-		<<set $NPCList[$_condomnpc].condom to false>>
+		<<bind>><<upperwear 35>>
+		"Bind <<pher>> arms," Harper says. "Tight."
+		<br><br>
+		They force your arms in front of you, and wrap them up tight. The doctor smiles. "
+		<<if $asylumstate is "sleep">>
+			Take <<phim>> to <<pher>> room. <<pShe>> needs <<pher>> sleep."
+			<br><br>
+
+			Flanked by orderlies, you are led to your cell. The door locks with a click.
+			<br><br>
+			<<endevent>>
+			<<link [[Next|Asylum Cell]]>><</link>>
+			<br>
+		<<else>>
+			Show <<phim>> around. Let the others see."
+			<br><br>
+
+			You are led through the occupied part of the asylum. Most patients ignore you, but some jeer. They leave you near your room.
+			<<gstress>><<stress 3>>
+			<br><br>
+			<<endevent>>
+			<<link [[Next|Asylum]]>><</link>>
+			<br>
+		<</if>>
 	<</if>>
 <</widget>>
 
-/* For the player equipping their own condom on themselves */
-<<widget "equipPlayerCondom">>
-	<<set $player.condom to {
-		state: (random(0,100) gt 98 ? "defective" : "normal"),
-		type: "plain",
-		colour: setup.colours.condom[random(0, (setup.colours.condom.length -1))].csstext,
-		worn: true
-	}>>
-	<<set $condoms -= 1>>
-<</widget>>
 
-/* For the player removing any condom from themselves */
-<<widget "removePlayerCondom">>
-	<<set $player.condom to false>>
-<</widget>>
+<<widget "asylumpunish2">>
+	<<endevent>><<npc Harper>><<person1>><<set $asylumbound to 2>>
+	"Take <<phim>> to the room," Harper says. "Make sure <<pher>> arms are bound tight."
+	<br><br>
 
-<<widget "giveNPCCondom">>
-	<<set $_condomnpc to (_args[0] ? _args[0] : 0)>>
-	<<if $NPCList[$_condomnpc].condom>>
-		<span class="red">ERROR: NPC condom $_condomnpc overlapped with existing condom.</span>
+	<<if $leftarm is "bound" and $rightarm is "bound">>
+		They push you to an empty wing of the asylum, through one of the doors marked "Staff Only."
 	<<else>>
-		<<set $NPCList[$_condomnpc].condom to {
-			willUse: true,
-			state: (random(0,100) gt 98 ? "defective" : "normal"),
-			type: "plain",
-			colour: setup.colours.condom[random(0, (setup.colours.condom.length -1))].csstext,
-			worn: false
-		}>>
-		<<set $condoms -= 1>>
-		<<set $NPCList[$_condomnpc].condomCanGive to false>>
-		<<npcCondomEquipImmediate $_condomnpc "it">>
+		They force you into a jacket and push you to an empty wing of the asylum.
+		<<bind>><<upperwear 35>>
+	<</if>>
+	Most of the lights here don't work, and those that do flicker to a strange rhythm.
+	<br><br>
+
+	You come to a tall metal door. They open it, revealing a pitch black room beyond. They shove you in, and slam the door behind you.
+	<br><br>
+
+	The room is tiny. There's just enough space to sit. You wait in total silence.
+	<br><br>
+
+	<<link [[Wait (1:00)|Asylum Room]]>><<pass 60>><</link>>
+	<br>
+<</widget>>
+
+<<widget "asylumoptions">>
+	<<if ($leftarm is "bound" or $rightarm is "bound") and $asylumbound lte 0>>
+		<<He>> looks at your bindings. "I think you've earned a release," <<he>> says as <<he>> crouches and unties them, before removing it completely.<<unbind>><<exposure>> <<He>> covers you with a gown.
+		<<unbind>><<upperwear 87>><<exposure>>
+		<br><br>
+	<</if>>
+	<<if $exposed gte 1>>
+		<<He>> steps back to regard you. <<covered>> "You can't see the doctor dressed like that," <<he>> says. <<He>> covers you with a gown.
+		<<unbind>><<upperwear 87>><<exposure>>
+		<br><br>
 	<</if>>
 <</widget>>
 
-<<widget "npcCondomEquipImmediate">>
-	<<set $_condomnpc to (_args[0] ? _args[0] : 0)>>
-	<<set $_condomArticle to (_args[1] ? _args[1] : 0)>>
-	<<if $NPCList[$_condomnpc].condom and $NPCList[$_condomnpc].condom.willUse>>
-		/*Your penis*/
-		<<if $penisstate is "entrance" or $penisstate is "imminent" or $penisstate is "otheranusentrance" or $penisstate is "otheranusimminent">>
-			<<if ($NPCList[$_condomnpc].vagina.toString().includes("penis") or $NPCList[$_condomnpc].penis.toString().includes("otheranus")) and !$player.condom and $parasite.penis.name is undefined>>
-				<<personselect $_condomnpc>>
-				<<if playerChastity("penis")>>
-					<<He>> tries to put a condom on your penis, but can't seem to get it over your $worn.genitals.name. <span class="red"><<He>> quickly gives up.</span>
-					<<set $NPCList[$_condomnpc].condom.willUse to false>>
-				<<else>>
-					<span class="green"><<He_Short>> slips <<condomDesc $_condomnpc $_condomArticle>> onto your penis.</span>
-					<<equipNPCCondom $_condomnpc "player">>
-				<</if>>
-			<</if>>
+<<widget "asylumevents">>
+	<<set $danger to random(1, 10000)>>
+	<<if $danger gte (9900 - $allure)>>
+		<<if $rng gte 91>>
+			<<generate1>><<person1>>
+			"Excuse me," says a voice to your side. It's a <<person>> wearing a patient's gown. "Doctor Harper gave me a task. I need to-" <<He>> looks away. "I need to expose myself to a dozen people before my next assessment. My b-body, I mean. C-can I show you?" <<He>> doesn't look happy.
+			<br><br>
+
+			<<link [[Accept|Asylum Exposure Accept]]>><<handheldon>><<arousal 600>><</link>><<garousal>>
+			<br>
+			<<link [[Accept but keep your eyes shut|Asylum Exposure Shut]]>><<famegood 1>><<handheldon>><</link>>
+			<br>
+			<<link [[Accept and pretend to keep your eyes shut|Asylum Exposure Peek]]>><<arousal 600>><<famegood 1>><<handheldon>><</link>><<garousal>>
+			<br>
+			<<link [[Refuse|Asylum Exposure Refuse]]>><<handheldon>><</link>>
+			<br>
+		<<elseif $rng gte 81 and (random(1,100) lte $suspicion)>>
+			<<generateDoctor 1>><<generate2>><<person1>>
+			A <<person>> dressed as an orderly approaches you.
+			"Hello. The doctor has extra time today and wants you in for an extra treatment," <<he>> says. "Come with me please."<br>
+			A <<person2>><<person>> stands behind you.
+			<br><br>
+			<<link [[Go with them|Asylum Fake Treatment Accept]]>><<handheldon>><</link>>
+			<br>
+			<<link [[Refuse to go|Asylum Fake Treatment Refuse]]>><<handheldon>><</link>><<physiquedifficulty 1 $physiquemax>>
+			<br>
+		<<elseif $rng gte 61>>
+			<<generate1>><<person1>><<npcClothesType $NPCList[0] "patient">>You catch one of the other patients, a <<person>>, looking at you. <<He>> smiles.
+			<br><br>
+
+			<<link [[Flirt (0:02)|Asylum Flirt]]>><<handheldon>><<asylumstatus 1>><<pass 2>><</link>><<promiscuous1>><<gcool>>
+			<br>
+			<<link [[Ignore|Asylum]]>><<endevent>><</link>>
+			<br>
+		<<elseif $rng gte 21>>
+			<<generate1>><<generatev2>><<person1>>One of the patients, a <<person>>, gropes one of the nurses, a <<person2>><<person>>. The nurse doesn't resist. <<He>> looks resigned.
+			<br><br>
+
+			<<link [[Intervene (0:02)|Asylum Intervene]]>><<handheldon>><<pass 2>><<suspicion -5>><<asylumstatus -5>><</link>><<llsuspicion>><<llcool>>
+			<br>
+			<<link [[Ignore|Asylum]]>><<endevent>><</link>>
+			<br>
+
+		<<else>>
+			<<generate1>><<person1>><<generate2>>A <<person>>, a patient, runs past you and hides from view, just as a <<person2>><<person>> rounds the corner. <<Hes>> a nurse. <<He>> looks around, then at you. "Have you seen a <<person1>><<person>> by chance?"
+			<br><br>
+
+			<<link [[Truth|Asylum Truth]]>><<handheldon>><<suspicion -5>><<asylumstatus -5>><</link>><<llsuspicion>><<llcool>>
+			<br>
+			<<link [[Lie|Asylum Lie]]>><<handheldon>><<suspicion 5>><<asylumstatus 5>><</link>><<ggsuspicion>><<ggcool>>
+			<br>
 		<</if>>
-		<<if $penisstate is "penetrated">>
-			<<if $NPCList[$_condomnpc].vagina is "penis" and !$player.condom and $parasite.penis.name is undefined>>
-				<<personselect $_condomnpc>>
-				<span class="green"><<He_Short>> briefly frees your penis from <<his>> vagina, slips <<condomDesc $_condomnpc $_condomArticle>> on, and slides it back in.</span>
-				<<equipNPCCondom $_condomnpc "player">>
-			<</if>>
-		<</if>>
-		<<if $penisstate is "otheranus">>
-			<<if $NPCList[$_condomnpc].penis is "otheranus" and !$player.condom and $parasite.penis.name is undefined>>
-				<<personselect $_condomnpc>>
-				<span class="green"><<He_Short>> briefly frees your penis from <<his>> ass, slips <<condomDesc $_condomnpc $_condomArticle>> on, and slides it back in.</span>
-				<<equipNPCCondom $_condomnpc "player">>
-			<</if>>
-		<</if>>
-		/*Their penis*/
-		<<if $vaginastate is "entrance" or $vaginastate is "imminent">>
-			<<if ($NPCList[$_condomnpc].penis is "vaginaentrance" or $NPCList[$_condomnpc].penis is "vaginaimminent") and $NPCList[$_condomnpc].condom.worn is false and !$NPCList[$_condomnpc].penisdesc.includes("strap-on")>>
-				<<personselect $_condomnpc>>
-				<<if $NPCList[$_condomnpc].chastity.penis.includes("chastity")>>
-					<<He>> tries to put a condom on, but can't seem to get it over <<his>> $NPCList[$_condomnpc].chastity.penis. <span class="red"><<He>> quickly gives up.</span>
-					<<set $NPCList[$_condomnpc].condom.willUse to false>>
-				<<else>>
-					<span class="green"><<He_Short>> slips <<condomDesc $_condomnpc $_condomArticle>> onto <<his>> penis.</span>
-					<<equipNPCCondom $_condomnpc>>
-				<</if>>
-			<</if>>
-		<</if>>
-		<<if $vaginastate is "penetrated">>
-			<<if $NPCList[$_condomnpc].penis is "vagina" and $NPCList[$_condomnpc].condom.worn is false and !$NPCList[$_condomnpc].penisdesc.includes("strap-on")>>
-				<<personselect $_condomnpc>>
-				<span class="green">The <<person>> briefly withdraws <<his>> penis from your vagina, slips <<condomDesc $_condomnpc $_condomArticle>> on, and slides it back in.</span>
-				<<equipNPCCondom $_condomnpc>>
-			<</if>>
-		<</if>>
-		<<if $anusstate is "entrance" or $anusstate is "imminent">>
-			<<if ($NPCList[$_condomnpc].penis is "anusentrance" or $NPCList[$_condomnpc].penis is "anusimminent") and $NPCList[$_condomnpc].condom.worn is false and !$NPCList[$_condomnpc].penisdesc.includes("strap-on")>>
-				<<personselect $_condomnpc>>
-				<span class="green">The <<person>> slips <<condomDesc $_condomnpc $_condomArticle>> onto <<his>> penis.</span>
-				<<equipNPCCondom $_condomnpc>>
-			<</if>>
-		<</if>>
-		<<if $anusstate is "penetrated">>
-			<<if $NPCList[$_condomnpc].penis is "anus" and $NPCList[$_condomnpc].condom.worn is false and !$NPCList[$_condomnpc].penisdesc.includes("strap-on")>>
-				<<personselect $_condomnpc>>
-				<span class="green">The <<person>> briefly withdraws <<his>> penis from your ass, slips <<condomDesc $_condomnpc $_condomArticle>> on, and slides it back in.</span>
-				<<equipNPCCondom $_condomnpc>>
-			<</if>>
-		<</if>>
+	<<else>>
+		<<link [[Next|Asylum]]>><<handheldon>><</link>>
+		<br>
 	<</if>>
 <</widget>>
 
-<<widget "pickupSexToy">>
-	<<if $consensual is 1 and hasSexStat("promiscuity", 3) and $enemytype is "man">>
-		<<set $_hand to _args[0]>>
-		<<set $_items to window.listUniqueCarriedSextoys()>>
-
-		<<if $_hand is "left" and ($lefttarget is "self" or $options.targetYourself is false or _targetnumber is 1)>>
-			<<if $_items.length gt 0>>
-				<<set _itemsLeft to {}>>
-
-				<<run $_items.forEach(item => {
-					if (($currentSexToyRight is undefined or item.name isnot $currentSexToyRight.name) and item.type.includesAny("dildo","stroker") and !item.worn){
-						_itemsLeft[item.namecap] = item;
-					}
-				})>>
-				<<if Object.keys(_itemsLeft).length gte 1>>
-					<<set _leftaction["Pick up item:"] to "pickupSexToy">>
-				<</if>>
-			<</if>>
-		<</if>>
-
-		<<if $_hand is "right" and ($righttarget is "self" or $options.targetYourself is false or _targetnumber is 1)>>
-			<<if $_items>>
-				<<set _itemsRight to {}>>
-
-				<<run $_items.forEach(item => {
-					if (($currentSexToyLeft is undefined or item.name isnot $currentSexToyLeft.name) and item.type.includesAny("dildo","stroker") and !item.worn){
-						_itemsRight[item.namecap] = item;
-					}
-				})>>
-				<<if Object.keys(_itemsRight).length gte 1>>
-					<<set _rightaction["Pick up item:"] to "pickupSexToy">>
-				<</if>>
-			<</if>>
-		<</if>>
+<<widget "passoutasylum">>
+	<<if isPregnancyEnding()>>
+		<<pregnancyPassout "asylum">>
+	<<else>>
+		<<passout>>
+		<<link [[Everything fades to black...|Passout Asylum]]>><</link>>
 	<</if>>
 <</widget>>
 
-<<widget "andButtPlug">><<silently>>
-	<<set _text_output to (playerHasButtPlug() ? " and $worn.butt_plug.name" : "")>>
-<</silently>><<print _text_output>><</widget>>
+<<widget "asylumescape">>
+	<<set $asylumescaped to 1>>
+	<<if $location is "tentworld">>
+		<<set $asylumtentacleescape to 1>> /* unused */
+	<</if>>
 
-<<widget "alongsideButtPlug">><<silently>>
-	<<set $_alongside to either("alongside","heedless of","pushing aside")>>
-	<<set _text_output to (playerHasButtPlug() ? ", "+$_alongside+" your "+$worn.butt_plug.name : "")>>
-<</silently>><<print _text_output>><</widget>>
+	<<if C.npc.Robin.init is 1>>
+		<<set $robinReunionScene to "asylum">>
+	<</if>>
+<</widget>>
