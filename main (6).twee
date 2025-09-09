@@ -1,1578 +1,1460 @@
-:: Lake Shore
-<<set $outside to 1>><<set $location to "lake">><<effects>><<lakeeffects>>
-<<set _earSlimeEnableSwimwear to true>>
-<<set $forest to 30>><<set $bus to "lakeshore">><<wearoutfit>>
-
-You are at the shore of the <<= Weather.isFrozen("lake") ? "frozen lake" : "lake">>.
-
-<<if Time.hour gte 15 and $halloween is 1 and Time.monthDay is 31 and $halloween_lake is 1>>
-	There are several people hanging out for the Halloween party.
-<<elseif $laketeenspresent is 1>>
-	<<if Weather.isFrozen("lake")>>
-		Students hang out nearby, while others practise ice skating.
-	<<else>>
-		<<if Time.season isnot "winter">>There are several people playing in the water. <</if>>You can see the swimmer's dock with a few students sitting on it.
-	<</if>>
-<<elseif Time.dayState is "night">>
-	<<if Time.isWeekEnd()>>
-		You can see faint light from a fire at the campsite across the water.
-	<<else>>
-		Dark water ripples unseen.
-	<</if>>
-<<elseif Time.dayState is "dusk" or Time.dayState is "dawn">>
-	<<if Weather.isFrozen("lake")>>
-		The sun reflects off the ice.
-	<<else>>
-		Undulating waves splash against the sand and rocks. A bear eats fish on the opposite bank.
-	<</if>>
-<<else>>
-	You can see your reflection in its surface.
-	<<if Weather.isFrozen("lake")>>
-		You could walk out to the swimmers dock if you wanted.
-	<<else>>
-		The swimmers dock sits idle out on the water.
-	<</if>>
-<</if>>
-<<if Weather.precipitation is "rain">>
-	The <<= Weather.isFrozen("lake") ? "ice" : "water">> is alive with motion as rain <<= Weather.isFrozen("lake") ? "bounces off" : "breaks">> its surface.
-<<elseif Weather.precipitation is "snow">>
-	Snow <<= Weather.isFrozen("lake") ? "settles on the ice" : "drifts into the frigid water">>.
-<<elseif Weather.isFrozen("lake")>>
-	The ice is serene.
-<<else>>
-	The water is calm.
-<</if>>
-<br><br>
-
-<<if $exposed gte 1 and $laketeenspresent is 1>>
-	You keep low and stay among the trees to keep your <<lewdness>> hidden.
-	<br><br>
-<</if>>
-
-<<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
-<<if $stress gte $stressmax and !$possessed>>
-	<<passoutlake>>
-<<elseif $foresthunt gte 10>>
-	<<foresthunt>>
-<<elseif $danger gte (9900 - $allure) and $eventskip is 0 and $laketeenspresent isnot 1 and !$possessed>>
-	<<eventlake>>
-<<elseif $town_projects.diving is 1 and $exposed lte 0 and !$possessed>>
-	<<set $town_projects.diving to 2>>
-	<<npc Winter>><<person1>>
-	<<if Weather.precipitation is "rain">>
-		You see Winter stood on the shore, the wind catching <<his>> grey hair beneath a black umbrella.
-	<<else>>
-		You see Winter stood on the shore, the wind catching <<his>> grey hair.
-	<</if>>
-	<<He>> glances your way.
-	<<if Time.dayState is "night">>
-		"Didn't expect company at this hour," <<he>> says.
-	<<elseif Time.schoolDay and Time.hour gte 9 and Time.hour lt 15>>
-		"Shouldn't you be in school?" <<he>> asks, then chuckles. "I suppose you could ask the same of me."
-	<<elseif Time.schoolDay>>
-		"I didn't expect company," <<he>> says.
-	<<elseif Time.weekDay is 7 or Time.weekDay is 1>>
-		"Don't worry," <<he>> says. "I won't be away from the museum long."
-	<<else>>
-		"I didn't expect company," <<he>> says.
-	<</if>>
-	<br><br>
-
-	<<He>> looks out over the lake.
-	<<if $winterlakeknown is 1>>
-		"Do you remember my mention of old structures beneath the water?
-	<<else>>
-		"There are old structures beneath the water.
-	<</if>>
-	Ancient. A wealth of heritage. I once wrote up plans for a field office here, so I could investigate. My petition fell on deaf ears."
-	<br><br>
-
-	<<He>> turns towards the trees, in the direction of town. "Forgive my ramblings. You stay safe out here."
-	<br><br>
-
-	<i>You could enquire about the field office at the town hall.</i>
-	<br><br>
-
-	<<link [[Next|Lake Shore]]>><<endevent>><<set $eventskip to 1>><</link>>
-	<br>
-<<elseif $town_projects.diving is 3 and $exposed lte 0 and !$possessed>>
-	<<set $town_projects.diving to 4>>
-	<<npc Winter>><<person1>>
-	You hear voices up ahead. Several people are hammering pegs around a dark green tent. Winter stands some distance away. <<He>> notices you, and springs over.
-	<br><br>
-
-	"Thank you," <<he>> says, clasping <<his>> hands over yours and shaking them. "The mayor called personally. Said a certain someone had provided the funds for my field office."
-	<br><br>
-
-	<<earnFeat "Field Work">>
-	<<link [[Next|Lake Shore Diving]]>><</link>>
-	<br>
-<<elseif Time.season isnot "winter" and !Time.isBloodMoon() and numberOfEarSlime() and !$daily.earSlimeStroll and random(0,100) gte 92 and (($exposed lte 1 and earSlimeMakingMundaneRequests()) or ($laketeenspresent isnot 1 and $exposed gte 2 and $earSlime.growth gte 20 - $earSlime.exhibitionism) or ($laketeenspresent is 1 and $exposed gte 2 and $earSlime.growth gte 50 - $earSlime.exhibitionism))>>
-	<<set $daily.earSlimeStroll to true>>
-	<span @class="$earSlime.startedThreats ? 'lewd' : 'lblue'">You feel the slime in your head command you to go for a stroll by the lake.</span> It promises rewards if you comply<<if $earSlime.startedThreats>>, and threatens consequences if you do not<</if>>.
-	<br><br>
-	/* Link decreases stress by both the ear slime and taking a stroll */
-	<<link [[Obey|Lake Stroll]]>>
-		<<pass 60>><<set $earSlimeLakeStroll to true>>
-		<<if $exposed gte 2>>
-			<<arousal 1000>><<rng>>
-			<<if $laketeenspresent is 1>>
-				<<set $phase to 2>>
-			<<else>>
-				<<set $phase to 3>>
-			<</if>>
-		<<else>>
-			<<set $phase to 1>>
-		<</if>>
-		<<corruption 1>><<pain -4>><<stress -12>><<trauma -12>><<sub 2>>
-	<</link>><<gcorruption>><<lpain>><<lltrauma>><<llstress>><<if $exposed gte 2>><<garousal>><</if>>
-	<br>
-	<<if $earSlime.startedThreats>>
-		<<link [[Defy|Lake Stroll Slime Defy]]>><<corruption -1>><<pain 8>><<stress 6>><<trauma 6>><<def 1>><</link>><<lcorruption>><<ggpain>><<ggtrauma>><<ggstress>>
-	<<else>>
-		<<link [[Ignore|Lake Shore]]>><</link>>
-	<</if>>
-<<else>>
-	<<eventlakesafe>>
-	<<lakereturnjourney>>
-
-	<<if clothingInStorage("lakeshore").length lt 1>>
-		There's a rocky alcove where you could store your clothes.
-		<br>
-	<</if>>
-	<<lakeclothes>>
-
-		The lake shimmers with your reflection,
-		<<if Weather.bloodMoon>>
-			drowning in blood.
-		<<elseif Time.dayState is 'dawn'>>
-			with an afterglow of amber from the dawn.
-		<<elseif Time.dayState is 'day'>>
-			leaving no impurities in the image.
-		<<elseif Time.dayState is 'dusk'>>
-			with an afterglow of amber from the dusk.
-		<<else>>
-			the moonlight illuminating the surface.
-		<</if>>
-		<br>
-		<<mirroricon>><<link [[Check your reflection|Lake Shore Mirror]]>><<preMirror>><</link>>
-		<br><br>
-
-		<<if Time.hour gte 18 and $halloween is 1 and Time.monthDay is 31 and $halloween_lake is 1>>
-			<<socialiseicon "party">><<link [[Join the party (0:10)|Lake Halloween Party]]>><<pass 10>><<stress -6>><<status 1>><</link>><<gcool>><<lstress>>
-			<br>
-		<<elseif $laketeenspresent is 1 and $exposed lte 0 and Time.hour isnot 20 and !Weather.isFrozen("lake")>>
-			<<socialiseicon>><<link [[Hang out (0:30)|Lake Hang]]>><<stress -6>><<status 1>><</link>><<gcool>><<lstress>>
-			<br>
-		<</if>>
-		<<if Weather.isFrozen("lake")>>
-			<<if $nextPassageCheck is "Lake Shallows Ice">>
-				<span class="nextLink"><<lakeicon>><<link [[Walk.|Lake Shallows Ice]]>><<pass 2>><</link>></span>
-			<<else>>
-				<<lakeicon>><<link [[Walk onto the ice (0:02)|Lake Shallows Ice]]>><<pass 2>><</link>>
-			<</if>>
-			<br>
-		<<else>>
-			<<if $nextPassageCheck is "Lake Shallows">>
-				<span class="nextLink"><<swimicon>><<link [[Swim.|Lake Shallows]]>><<pass 2>><</link>></span>
-			<<else>>
-				<<swimicon>><<link [[Swim (0:02)|Lake Shallows]]>><<pass 2>><</link>>
-				<<swim_check>> <<if _swim_check isnot 1 and $statdisable is "f">> | <span class="purple">You are not wearing any swimwear!</span> <</if>>
-			<</if>>
-			<br>
-		<</if>>
-		<<if $town_projects.diving gte 4>>
-			<<if $exposed gte 2>>
-				It's not the best idea to stroll into the archaeological field office in your state.
-			<<else>>
-				<<lakeicon "field office">><<link [[Archaeological field office (0:02)|Lake Office]]>><<pass 2>><</link>>
-			<</if>>
-			<br>
-		<</if>>
-		<<if !Weather.isFrozen("lake") and !Time.isBloodMoon()>>
-			<<if $exposed gte 2>>
-				<<if hasSexStat("exhibitionism", 5) and $laketeenspresent is 1>>
-					<<walkicon>><<link [[Take a stroll (1:00)|Lake Stroll]]>><<pass 60>><<stress -6>><<arousal 1000>><<rng>><<set $phase to 2>><</link>><<exhibitionist5>><<garousal>><<lstress>>
-					<br>
-				<<elseif hasSexStat("exhibitionism", 4) and $laketeenspresent isnot 1>>
-					<<walkicon>><<link [[Take a stroll (1:00)|Lake Stroll]]>><<pass 60>><<stress -6>><<arousal 1000>><<rng>><<set $phase to 3>><</link>><<exhibitionist4>><<garousal>><<lstress>>
-					<br>
-				<</if>>
-			<<else>>
-				<<walkicon>><<link [[Take a stroll (1:00)|Lake Stroll]]>><<pass 60>><<stress -6>><<set $phase to 1>><</link>><<lstress>>
-				<br>
-			<</if>>
-		<</if>>
-
-		<<if $debug is 1>>
-			<<ind>><<link [[North to firepit (0:10)|Lake Firepit]]>><<pass 10>><</link>>
-			<br>
-		<</if>>
-		<<if $earSlime.forcedCommando isnot undefined and $worn.under_lower.name isnot "naked">>
-		<<elseif $town_projects.road gte 4>>
-			<<busicon>><<link [[North to bus stop|Lake Bus]]>><</link>>
-			<br>
-		<</if>>
-	<<if $nextPassageCheck is "Lake Waterfall">>
-		<span class="nextLink"><<lakeicon "waterfall">><<link [[South to waterfall (0:10)|Lake Waterfall]]>><<pass 10>><</link>></span>
-	<<else>>
-		<<lakeicon "waterfall">><<link [[South to waterfall (0:10)|Lake Waterfall]]>><<pass 10>><</link>>
-	<</if>>
-	<br><br>
-	/* Added $exhibitionism due to situations where the player can be soft locked and unsure how best to deal with it */
-	<<if $earSlime.forcedCommando isnot undefined and !$worn.under_lower.type.includes("naked") and hasSexStat("exhibitionism", 3)>>
-		<span class="red">The slime in your ear refuses to allow you to leave with <<underwearTypeText>> on.</span>
-	<<else>>
-		<<foresticon>><<link [[Forest (0:10)|Forest]]>><<pass 10>><</link>>
-	<</if>>
-	<br>
-	<<set $eventskip to 0>>
-<</if>>
-
-:: Lake Shore Diving
-<<effects>>
-
-"It might not look like much," Winter says. "But it will keep the warmth in these old bones well enough. Let me show you."
-<br><br>
-
-Winter leads you into the tent. It's spacious. A long table runs down the length. Diving suits hang on a rack near an area separated by a flap. They're visibly wet, and were likely used recently.
-<br><br>
-
-"They're running cables for power," <<he>> says. <span class="green">"You'll be able to find me here on weekdays, after school."</span>
-<br><br>
-
-<<if Time.dayState is "night">>
-	"I can't wait to get started, but it's late. Again, thank you. I can scarcely wait to start!"
-<<elseif Time.weekDay gte 1 and Time.weekDay lte 5>>
-	<<if Time.schoolDay and Time.hour gte 9 and Time.hour lt 15>>
-		"I can't wait to get started, but I can't neglect my students. Again, thank you. I can scarcely wait to start!"
-	<<else>>
-		"I can't wait to get started, but it's late. Again, thank you. I can scarcely wait to start!"
-	<</if>>
-<<else>>
-	<<He>> places a bag upon the table, and begins unpacking. "Again, thank you. I can't wait to start!"
-<</if>>
-<br><br>
-
-<<link [[Next|Lake Office]]>><<endevent>><</link>>
-<br>
-
-:: Lake Office
-<<set $outside to 0>><<location "lake_office">><<effects>>
-
-You are in the archaeological office at the lake. Green tent walls surround a spacious interior.
-<<if Time.schoolDay and Time.hour gte 16 and Time.hour lte 20 or !Time.schoolDay and Time.hour gte 6 and Time.hour lte 20>>
-	<<npc Winter>><<person1>>
-	Winter sits in front of a table, engrossed in study.
-<</if>>
-<br><br>
-
-<<if (Time.schoolDay and Time.hour gte 16 and Time.hour lte 20 or !Time.schoolDay and Time.hour gte 6 and Time.hour lte 20)>>
-	<<if !$weekly.winterLakeTalk>>
-		<<socialiseicon "ask">><<link [[Ask about Winter's research|Lake Office Ask]]>><</link>>
-		<br>
-	<</if>>
-	<<if $winterLakeTalk is 1 and $bogProgress is 1>>
-		<<socialiseicon>><<link [[Tell Winter about the bog|Lake Office Ask Bog]]>><<npcincr Winter love 2>><</link>><<glove>>
-		<br>
-	<</if>>
-<</if>>
-<<getouticon>><<link [[Leave|Lake Shore]]>><<endevent>><</link>>
-<br>
-
-:: Lake Office Ask
-<<set $outside to 0>><<location "lake_office">><<effects>>
-<<set $winterLakeTalk = ($winterLakeTalk || 0)>>
-<<if $winterLakeTalk is 0>>
-	<<if $speech_attitude is "meek">>
-		"Was... was this worth it? Have you learned anything?"
-	<<elseif $speech_attitude is "bratty">>
-		"So, was this whole project worth the money? Did you learn anything?"
-	<<else>>
-		"Has the office been helpful? Did you learn anything?"
-	<</if>>
-<<else>>
-	<<if $speech_attitude is "meek">>
-		"H-have you learned anything new?"
-	<<elseif $speech_attitude is "bratty">>
-		"Anything new?"
-	<<else>>
-		"What's new?"
-	<</if>>
-<</if>>
-you ask.
-<br><br>
-
-<<switch $winterLakeTalk>>
-	<<case 0>>
-		<<set $winterLakeTalk to 1>><<set $weekly.winterLakeTalk to true>>
-		<<His>> head tilts slightly. "Normally I wouldn't be so inclined to share new and potentially flawed information, but you're to thank for all of this. I can make an exception." <<npcincr Winter love 1>><<glove>>
-		<br><br>
-
-		"Manmade interference is obvious, even beyond the submerged ruins. Erosion patterns show that the channel leading north towards the town is at least partially artificial. The former natural waterway that leads east became a small brook due to the redirection."
-		<br><br>
-
-		<<He>> pauses for a moment. "We can't place a definitive date, and nothing about the northern waterway exists in the town's records. However, the stagnation caused by the reduced flow may have led to the formation of the bog to the east. <span class="green">One could possibly traverse the dry section of the riverbed to bypass the dense foliage between here and there</span>. I may have more information for you soon, depending on whether or not I can find someone to <span class="blue">scout the brook for me.</span>"
-		<br><br>
-
-		<<if !$brookIntro>>
-			<<set $brookIntro to 1>>
-			<span class="gold">You've discovered the offshoot brook near the waterfall.</span>
-			<br><br>
-		<</if>>
-
-		<<link [[Next|Lake Office]]>><<endevent>><</link>>
-		<br>
-	<<case 1>>
-		<<if $bogProgress gte 2>>
-			<<set $winterLakeTalk to 2>><<set $weekly.winterLakeTalk to true>>
-			<<He>> turns to you. "The lake is fed by a tributary river that forms in the mountain to the west. However, the lake wasn't always here. That much is made obvious by the old ruins. The questions are when, and why? Where did the river lead to before then?"
-			<br><br>
-
-			<<He>> pauses. "I'll be sending a group to take notes on the bog. <span class="green">We finally have some volunteers thanks to your scouting.</span> Come see me in a week, and I may have more for you."
-		<<else>>
-			<<set $weekly.winterLakeTalk to true>>
-			<<He>> frowns. "Afraid not. <span class="blue">I need someone to investigate the brook's path.</span> Until then, we're stuck."
-		<</if>>
-		<br><br>
-
-		<<link [[Next|Lake Office]]>><<endevent>><</link>>
-		<br>
-	<<case 2>>
-		<<set $winterLakeTalk to 3>>
-		<<set $bogTeam to {
-			state: "active",
-			robinKnown: false,
-			robinPresent: false,
-			timer: 0
-		}>>
-		<<He>> nods. "My team has collected samples-"
-		<br><br>
-
-		As if on cue, someone enters the tent. It's Sirris. <<npc Sirris 2>><<person2>> <<He>> drops a large backpack onto the desk beside Winter, smiling. "Branch trimmings, a sketch of the heartwood rings, and a small jar of sap," <<he>> says proudly before smiling at you.
-		<br><br>
-
-		<<npc Niki 3>><<npc Wren 4>>
-		<<run getRobinLocation()>>
-		<<if _robin_location isnot $robinmissing>>
-			<<npc Robin 5>><<set $bogTeam.robinKnown to true>><<set $bogTeam.robinPresent to true>>
-			Two more enter. You first notice Robin shuffling awkwardly and looking downtrodden. <<person5>><<He>> lightens up upon seeing you. "Hey. Winter said <<person1>><<he>> needed help, so I volunteered!"
-			Behind <<person5>><<him>> is a <<person4>><<personsimple>> with <<if $pronoun is "m">>short<<else>>shoulder-length<</if>> hair. There's a pistol holstered on <<his>> belt.
-			<<if $wrenSeen.includesAny("cards", "letter", "prison", "catsuit")>>
-				<span class="gold">It's Wren.</span>
-				<br><br>
-
-				"Well, if it isn't my favourite troublemaker," <<he>> says with a grin. <<He>> places a hand on Robin's head, ruffling <<person5>><<his>> hair.
-				<<if $robinromance is 1>>
-					"Never guessed this would be your <<girlfriend>>, Ro." Robin pushes Wren's hand away. The emotion on <<his>> face is hard to read, but you think you catch a mixture of disgust and 'help me'.
-				<<else>>
-					"Never guessed this would be the friend you were telling me all about, Ro." Robin pushes Wren's hand away and takes a step out of reach. The emotion on <<his>> face is hard to read.
-				<</if>>
-			<<elseif $wrenSeen.length>>
-				<span class="gold">It's Wren.</span>
-				<br><br>
-
-				"Well, fancy seeing you here," <<he>> says with a grin. <<He>> places a hand on Robin's head, ruffling <<person5>><<his>> hair.
-				<<if $robinromance is 1>>
-					"Never guessed this would be your <<girlfriend>>, Ro." Robin pushes Wren's hand away. The emotion on <<his>> face is hard to read, but you think you catch a mixture of disgust and 'help me'.
-				<<else>>
-					"Never guessed this would be the friend you were telling me all about, Ro." Robin pushes Wren's hand away and takes a step out of reach. The emotion on <<his>> face is hard to read.
-				<</if>>
-			<<else>>
-				<br><br>
-				<<if $robinromance is 1>>
-					"Oh, is this your <<girlfriend>>, Ro? <span class="gold">The name's Wren,</span>" <<he>> says, ruffling Robin's hair as <<he>> looks at you. Robin pushes Wren's hand away. The emotion on <<person5>><<his>> face is hard to read, but you think you catch a mixture of disgust and 'help me'.
-				<<else>>
-					"Oh, is this the friend you were telling me about, Ro? <span class="gold">The name's Wren,</span>" <<he>> says, ruffling Robin's hair as <<he>> looks at you. Robin pushes Wren's hand away and takes a step out of reach. The emotion on <<person5>><<his>> face is hard to read.
-				<</if>>
-			<</if>>
-			Wren frowns, but is cut off by
-		<<else>>
-			Two more enter the tent. You first notice a <<person4>><<personsimple>> with <<if $pronoun is "m">>short<<else>>shoulder-length<</if>> hair. There's a pistol holstered on <<his>> belt.
-			<<if $wrenSeen.includesAny("cards", "letter", "prison", "catsuit")>>
-				<span class="gold">It's Wren.</span>
-				<br><br>
-
-				"Well, if it isn't my favourite troublemaker," <<he>> says with a grin.
-			<<elseif $wrenSeen.length>>
-				<span class="gold">It's Wren.</span>
-				<br><br>
-
-				"Well, fancy seeing you here," <<he>> says with a grin.
-			<<else>>
-				"Damn, how much more help are you planning on pulling in, Winter?" <<He>> regards you with a grin. <span class="gold">"The name's Wren."</span>
-			<</if>>
-			<<Hes>> cut off by
-		<</if>>
-		a young <<person3>><<personsimple>> with a stick in <<his>> mouth pushing in, looking down at a camera.
-		<br><br>
-
-		<<if !$nikiSeen.length>>
-			"That's Niki," Sirris says. "A photographer who works in town. When Winter came calling, I thought <<he>> would be interested." Niki acknowledges you with a nod.
-		<<elseif $nikiSeen.includes("adult_shop_opening")>>
-			It's Niki, the photographer. "You remember Niki, right?" Sirris asks. "From the opening of the shop." Niki acknowledges you with a nod.
-		<<elseif $nikiSeen.includes("farm")>>
-			<span class="red">It's Niki,</span> the photographer from Remy's farm. <<He>> looks alarmed to see you. "That's Niki," Sirris says. "A photographer who works in town. When Winter came calling, I thought <<he>> would be interested." <<gtrauma>><<trauma 6>>
-		<<else>>
-			It's Niki, the photographer. <<He>> acknowledges you with a nod. "That's Niki," Sirris says. "A photographer who works in town. When Winter came calling, I thought <<he>> would be interested."
-		<</if>>
-		<br><br>
-
-		<<set $wrenSeen.pushUnique("winter")>>
-		<<set $wrenSeenLast to "winter">>
-		<<set $nikiSeen.pushUnique("winter")>>
-
-		<<link [[Next|Lake Office Volunteers]]>><</link>>
-		<br>
-	<<case 3>>
-		"Nothing new, yet. It may be some time before we make any meaningful progress."
-		<br><br>
-
-		<<link [[Next|Lake Office]]>><<endevent>><</link>>
-		<br>
-	<<default>>
-		"Nothing yet," <<he>> says with a hint of regret. "We've hit something of a standstill."
-		<br><br>
-
-		<<link [[Next|Lake Office]]>><<endevent>><</link>>
-		<br>
-<</switch>>
-
-:: Lake Office Ask Bog
-<<set $outside to 0>><<location "lake_office">><<effects>>
-<<set $bogProgress to 2>><<set $weekly.winterLakeTalk to false>>
-<<if $speech_attitude is "meek">>
-	"You were right about that brook, it leads into a scary bog," you say. "It looks dangerous."
-<<elseif $speech_attitude is "bratty">>
-	"You're right on the money about the brook, it leads into a bog," you say. "I went and looked for you. Aren't I sweet?"
-<<else>>
-	"You were right about the brook. It leads into a bog," you say.
-<</if>>
-You also tell <<him>> how it can be safely traversed, and about the one-way drop into the bog.
-<br><br>
-
-You see a smile cross <<his>> face, but only for a moment. "You didn't have to do that. It could have been dangerous. But this is valuable information. Thank you." <<glove>>
-<br><br>
-
-<<He>> pauses. "I'm sure I'll be able to find volunteers now that they won't have to go in completely blind, or go all the way around through the moor."
-<br><br>
-
-<<link [[Next|Lake Office]]>><<endevent>><</link>>
-<br>
-
-:: Lake Office Volunteers
-<<set $outside to 0>><<location "lake_office">><<effects>>
-
-<<person1>>Winter clears <<his>> throat. "Thank you, you <<if $bogTeam.robinKnown>>four<<else>>three<</if>>. You look like you've worked hard today. I appreciate excellence, but remember not to overdo it."
-<<if !$bogTeam.robinKnown>>
-	Winter turns to you. "I had hoped to ask your classmate Robin for aid as well, but I haven't seen <<nnpc_him "Robin">>."
-<</if>>
-<br><br>
-
-The group leaves the tent, saying their goodbyes. "I may ask you to join them on one of their trips in the future. However, to answer your initial question..." <<He>> begins to dig through Sirris' backpack.
-"This lake should not exist. More water drains than is fed into it. The only explanation currently feasible is that the lake is connected to an underground aquifer or aqueduct that feeds it. But the divers have found no such passage."
-<br><br>
-
-<<He>> examines a jar of tree sap. "Patterns of old-growth trees show that the area around the lake was logged heavily. Sirris' current theory is that the lack of sturdy vegetation, combined with an unseasonably warm spring and rapid snowmelt, led to the river bursting its banks and forming a large sinkhole some centuries ago."
-<br><br>
-
-<<He>> continues. "The persistence of such dense vegetation around the brook still eludes me. Perhaps it's an invasive species that requires less water. This is all we've learned as of now."
-<br><br>
-
-<<link [[Next|Lake Office]]>><<endevent>><</link>>
-<br>
-
-:: Lake Shore Mirror
+:: Nude Masturbation
 
 <<effects>>
-<<link [[Step away|Lake Shore]]>><<handheldon>><<unset $mirrorMenu>><<unset $bodywritingSet>><</link>>
-<br>
-<<mirror "reflection">>
-<br><br>
-
-:: Lake Bus
-<<set $outside to 1>><<set $location to "lake">><<set $bus to "lakebus">><<effects>><<lakeeffects>>
-
-You are at the bus stop beside the lake. The road from town terminates here, ending in a paved circle. The lake proper is visible over a ridge.
-<br><br>
-
-<<if $exposed lte 0>>
-	<<busicon>><<link [[Wait for a bus (0:02)|Bus]]>><<pass 2>><</link>><br>
+<<if $masturbationstart is 1>>
+	<<set $masturbationstart to 0>>
+	<<set $masturbationstat += 1>>
+	<<masturbationstart>>
+	<<set $timer to $rng>>
 <</if>>
+<<masturbationeffects>>
+<<masturbationactions>>
 
-<<lakeicon>><<link [[South to shore|Lake Shore]]>><</link>>
-<br>
-
-:: Lake Waterfall
-
-<<set $outside to 1>><<set $location to "lake">><<effects>><<lakeeffects>>
-<<set $forest to 40>><<set $bus to "lakewaterfall">>
-
-You are at the waterfall.
-
-<<if Weather.isFrozen("lake")>>
-	It feeds the lake through a gap in the ice.
-<<elseif $laketeenspresent is 1>>
-	<<set _in to Time.season is "winter" ? "near" : "in">>
-	Some of the students are playing _in the falling water. Others sit _in the pond above.
-<<elseif Time.dayState is "night">>
-	It's a curtain of silver in the moonlight.
-<<else>>
-	Water is flowing down from the pond up on the rocks. A refreshing mist rolls out.
+<<if $corruptionMasturbation>>
+	<span class="red">The slime in your ear will not allow you to stop.</span>
 <</if>>
-
-<<if Weather.precipitation is "snow">>
-	Snow <<= Weather.isFrozen("lake") ? "settles on its surface" : "drifts into the frigid water">>.
-<<elseif Weather.isFrozen("lake")>>
-	The ice is <<= Weather.precipitation is "rain" ? "pelted with frigid rain" : "serene">>.
-<<else>>
-	The water is <<= Weather.precipitation is "rain" ? "alive with motion as rain breaks its surface" : "calm">>.
-<</if>>
-
-<br><br>
-<<if $exposed gte 1 and $laketeenspresent is 1>>
-	<<if hasSexStat("exhibitionism", 5)>>
-		You keep low and stay among the trees. You really wish to show your <<lewdness>>, but you restrain yourself from doing so.
+<div id="masturbationButtons">
+	<<if $timer lte 0>>
+		<div id="next"><<link [[Continue|Nude Cat]]>><<set $finish to 1>><</link>><<nexttext>></div>
 	<<else>>
-		You keep low and stay among the trees to keep your <<lewdness>> from being seen.
+		<div id="next"><<link [[Continue|$passage]]>><</link>><<nexttext>></div>
 	<</if>>
-	<br><br>
-<</if>>
+	<<masturbationStopControls>>
+</div>
+<br><br><br><br><br>
 
-<<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
-<<if $stress gte $stressmax and !$possessed>>
-	<<passoutlake>>
-<<elseif $foresthunt gte 10>>
-	<<foresthunt>>
-<<elseif $danger gte (9900 - $allure) and $eventskip is 0 and $laketeenspresent isnot 1>>
-	<<eventlake>>
-<<elseif !$brookIntro and $historytrait gte 4 and $sciencetrait gte 2 and $tending gte 200 and !$possessed>>
-	<<set $brookIntro to 1>>
-	You let yourself listen to the trickle of water for a moment. Curiosity gets the better of you. You look at the waterfall, and follow the stream that runs off. It slowly but gradually gets weaker as it disappears into a nearly impassible wall of foliage. <span class="green">Nearly.</span>
-	<br><br>
+:: Nude Masturbation Finish
 
-	You remember your science and history lessons. This is an offshoot distributary of the lake. It flows east towards the moor, instead of north towards the ocean. All rivers end somewhere, and this one must flow sharply downwards into the bog between the forest and moor.
-	<br><br>
-
-	<span class="gold">With some care, you could traverse the brook's channel deeper into the forest, and eventually into the bog and moor.</span> <span class="red">But it would be a one-way trip.</span>
-	<br><br>
-
-	<<link [[Next|Lake Waterfall]]>><<set $eventskip to 1>><</link>>
-	<br>
-<<else>>
-	<<eventlakesafe>>
-	<<lakereturnjourney>>
-	<<if $pregnancyStats.parasiteDoctorEvents gte 2>>
-		<<containersLink>>
-	<</if>>
-	<<if $mason_count gte 2 and !Weather.isFrozen("lake")>>
-		<<lakeicon "pond">><<link [[Mason's pond (0:05)|Mason Pond]]>><<pass 5>><</link>>
-		<br>
-	<</if>>
-	<<if $nextPassageCheck is "Lake Shore">>
-		<<lakeicon>><span class="nextLink"><<link [[The lake.|Lake Shore]]>><<pass 10>><</link>></span>
-	<<else>>
-		<<lakeicon>><<link [[North to shore (0:10)|Lake Shore]]>><<pass 10>><</link>>
-	<</if>>
-	<br>
-	<<lakeicon "fishing">><<link [[South to fishing rock (0:10)|Lake Fishing Rock]]>><<pass 10>><</link>>
-	<br>
-	<<if $brookIntro gte 1>>
-		<<if $worn.feet.type.includes("heels")>>
-			<span class="red">Traversing the brook in heels would be impossible.</span>
-		<<else>>
-			<<foresticon "river">><<link [[East to brook (0:10)|Forest Brook]]>><<pass 10>><<tiredness 4>><</link>><<gtiredness>>
-		<</if>>
-		<br>
-	<</if>>
-	<br>
-	<<if $earSlime.forcedCommando isnot undefined and !$worn.under_lower.type.includes("naked") and hasSexStat("exhibitionism", 3)>>
-		<span class="red">The slime in your ear refuses to allow you to leave with <<underwearTypeText>> on.</span>
-	<<else>>
-		<<foresticon>><<link [[Forest (0:10)|Forest]]>><<pass 10>><</link>>
-	<</if>>
-	<br>
-	<<set $eventskip to 0>>
-<</if>>
-
-:: Lake Fishing Rock
-
-<<set $outside to 1>><<set $location to "lake">><<effects>><<lakeeffects>>
-<<set $forest to 50>><<set $bus to "lakefishingrock">>
-You are on the fishing rock.
-<<if $laketeenspresent is 1>>
-	You see people on the other side of the <<= Weather.isFrozen("lake") ? "frozen lake" : "lake. Fish splash up to eat insects. It's peaceful, though the nearby trees are foreboding">>.
-<<elseif Time.dayState is "night">>
-	Dark water ripples unseen beneath the <<= Weather.isFrozen("lake") ? "ice" : "lake surface">>.
-<<elseif Time.dayState is "dusk" or Time.dayState is "dawn">>
-	<<= Weather.isFrozen("lake") ? "The lake ice sparkles in the dim light" : "Fish splash up to eat insects">>. It's peaceful, though the nearby trees are foreboding.
-<<else>>
-	From here you have a clear view of the entire lake. You see fish swimming <<= Weather.isFrozen("lake") ? "beneath the ice" : "in the water">>.
-<</if>>
-<<if Weather.isFrozen("lake")>>
-	<<= Weather.precipitation is "snow" ? "Snow settles on the ice" : "The ice is serene">>.
-<<else>>
-	The water is <<= Weather.precipitation is "rain" ? "alive with motion as rain breaks its surface" : "calm">>.
-<</if>>
-<br><br>
-
-<<if $exposed gte 1 and $laketeenspresent is 1>>
-	<<if hasSexStat("exhibitionism", 5)>>
-		You keep low and stay among the trees. You really wish to show your <<lewdness>>, but you restrain yourself from doing so.
-	<<else>>
-		You keep low and stay among the trees to keep your <<lewdness>> from being seen.
-	<</if>>
-	<br><br>
-<</if>>
-
-<<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
-<<if $stress gte $stressmax and !$possessed>>
-	<<passoutlake>>
-<<elseif $foresthunt gte 10>>
-	<<foresthunt>>
-<<elseif $danger gte (9900 - $allure) and $eventskip is 0 and $laketeenspresent isnot 1>>
-	<<eventlake>>
-<<else>>
-	<<eventlakesafe>>
-	<<lakereturnjourney>>
-	<<lakeicon "meditate">><<link [[Meditate|Lake Meditate]]>><<set $phase to 1>><</link>>
-	<br>
-	<<if $nextPassageCheck is "Lake Waterfall">>
-		<<lakeicon>><span class="nextLink"><<link [[The lake.|Lake Waterfall]]>><<pass 10>><</link>></span>
-	<<else>>
-		<<lakeicon "waterfall">><<link [[North to waterfall (0:10)|Lake Waterfall]]>><<pass 10>><</link>>
-	<</if>>
-	<br>
-	<<lakeicon "campfire">><<link [[South to campsite (0:20)|Lake Campsite]]>><<pass 20>><</link>>
-	<br><br>
-
-	<<if $earSlime.forcedCommando isnot undefined and !$worn.under_lower.type.includes("naked") and hasSexStat("exhibitionism", 3)>>
-		<span class="red">The slime in your ear refuses to allow you to leave with <<underwearTypeText>> on.</span>
-	<<else>>
-		<<foresticon>><<link [[Forest (0:10)|Forest]]>><<pass 10>><</link>>
-	<</if>>
-	<br>
-	<<set $eventskip to 0>>
-<</if>>
-
-:: Lake Firepit
-
-<<set $outside to 1>><<set $location to "lake">><<effects>><<lakeeffects>>
-<<set $forest to 30>><<set $bus to "lakefirepit">>
-
-You are at the Firepit.
-<<if $laketeenspresent is 1>>
-	Several students sit on a circle of stone benches. <<= Weather.isFrozen("lake") ? "Others try to skate on the nearby ice" : "You can see several people splashing in the water down on the shore">>.
-<<elseif Time.dayState is "night">>
-	<<if $laketeensfire is 1>>
-		People are sitting around the fire as it burns, talking and drinking. The reflection of the fire on the lake's <<= Weather.isFrozen("lake") ? "ice" : "surface">> is almost mesmerising.
-	<<else>>
-		Dark water ripples unseen beneath the lake's <<= Weather.isFrozen("lake") ? "ice" : "surface">>.
-	<</if>>
-<<else>>
-	There are stone benches circling the pit.
-<</if>>
-<<if Weather.isFrozen("lake")>>
-	<<= Weather.precipitation is "snow" ? "Snow settles on the ice below" : "The ice is serene">>.
-<<else>>
-	The water is <<= Weather.precipitation is "rain" ? "alive with motion as rain breaks its surface" : "calm">>.
-<</if>>
-<br><br>
-
-<<if $exposed gte 1 and ($laketeenspresent is 1 or $laketeensfire is 1)>>
-	<<if hasSexStat("exhibitionism", 5)>>
-		You keep low and stay among the trees. You really wish to show your <<lewdness>>, but you restrain yourself from doing so.
-	<<else>>
-		You keep low and stay among the trees to keep your <<lewdness>> from being seen.
-	<</if>>
-	<br><br>
-<</if>>
-
-<<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
-<<if $stress gte $stressmax and !$possessed>>
-	<<passoutlake>>
-<<elseif $foresthunt gte 10>>
-	<<foresthunt>>
-<<elseif $danger gte (9900 - $allure) and $eventskip is 0 and $laketeenspresent isnot 1>>
-	<<eventlake>>
-<<else>>
-	<<if $arousal gte $arousalmax>>
-		<<orgasmLocation "lake" `$laketeenspresent isnot 1`>>
-	<</if>>
-	<<eventlakesafe>>
-	<<lakereturnjourney>>
-	<<link [[South to shore (0:10)|Lake Shore]]>><<pass 10>><</link>>
-	<br><br>
-
-	<<if $earSlime.forcedCommando isnot undefined and !$worn.under_lower.type.includes("naked") and hasSexStat("exhibitionism", 3)>>
-		<span class="red">The slime in your ear refuses to allow you to leave with <<underwearTypeText>> on.</span>
-	<<else>>
-		<<foresticon>><<link [[Forest (0:10)|Forest]]>><<pass 10>><</link>>
-	<</if>>
-	<br>
-	<<set $eventskip to 0>>
-<</if>>
-
-:: Lake Campsite
-
-<<set $outside to 1>><<set $location to "lake">><<effects>><<lakeeffects>>
-<<set $forest to 50>><<set $bus to "lakecampsite">>
-
-You are at the campsite.
-<<if Time.dayState is "night">>
-	<<if Weather.precipitation is "none" and Time.hour gte 18 and $daily.lakeCouple isnot 1>>
-		A couple cuddles beside a small fire. There is a tent set up nearby.
-	<<elseif Weather.precipitation is "rain" or Weather.precipitation is "snow">>
-		An unlit fireplace sits in the centre of the clearing. The <<= Weather.precipitation>> may have driven off campers.
-	<<else>>
-		Embers burn beside a tent.
-	<</if>>
-<<elseif Time.dayState is "dawn">>
-	It looks like it was used recently.
-<<else>>
-	An unlit fireplace sits in the centre of the clearing.
-<</if>>
-<br><br>
-
-<<if Weather.precipitation is "none" and Time.hour gte 18 and $exposed gte 1 and $daily.lakeCouple isnot 1>>
-	<<if hasSexStat("exhibitionism", 5)>>
-		You keep low and stay among the trees. You really wish to show your <<lewdness>>, but you restrain yourself from doing so.
-	<<else>>
-		You keep low and stay among the trees to keep your <<lewdness>> from being seen.
-	<</if>>
-	<br><br>
-<</if>>
-
-<<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
-<<if $stress gte $stressmax and !$possessed>>
-	<<passoutlake>>
-<<elseif $foresthunt gte 10>>
-	<<foresthunt>>
-<<elseif $danger gte (9900 - $allure) and $eventskip is 0 and $laketeenspresent isnot 1>>
-	<<eventlake>>
-<<else>>
-	<<if $arousal gte $arousalmax>>
-		<<orgasmLocation "campsite">>
-	<</if>>
-	<<eventlakesafe>>
-	<<lakereturnjourney>>
-	<<if Weather.precipitation is "none" and Time.hour gte 18 and $exposed lte 0 and $daily.lakeCouple isnot 1>>
-		<<ind>><<link [[Approach the couple|Lake Couple]]>><</link>>
-		<br>
-	<</if>>
-	<<if $nextPassageCheck is "Lake Fishing Rock">>
-		<<lakeicon>><span class="nextLink"><<link [[The lake.|Lake Fishing Rock]]>><</link>></span>
-	<<else>>
-		<<lakeicon "fishing">><<link [[North to fishing rock (0:10)|Lake Fishing Rock]]>><<pass 10>><</link>>
-	<</if>>
-	<br><br>
-
-	<<if $earSlime.forcedCommando isnot undefined and !$worn.under_lower.type.includes("naked") and hasSexStat("exhibitionism", 3)>>
-		<span class="red">The slime in your ear refuses to allow you to leave with <<underwearTypeText>> on.</span>
-	<<else>>
-		<<foresticon>><<link [[Forest (0:10)|Forest]]>><<pass 10>><</link>>
-	<</if>>
-	<br>
-	<<set $eventskip to 0>>
-<</if>>
-
-:: Lake Shallows
-
-<<set $outside to 1>><<set $location to "lake">><<set $bus to "lakeshallows">><<water>><<effects>><<lakeeffects>>
-<<if $laketeenspresent is 1>>
-	You are swimming in the lake near the shore. The beach is alive with activity. <<if Time.season isnot "winter">>People play in the sand and water.<</if>>
-<<else>>
-	<<if Weather.precipitation is "rain">>
-		You are swimming in the lake near the shore. The rain drowns out the sounds of the forest.
-	<<else>>
-		You are swimming in the lake near the shore. There is no one at the beach today. The sound of the forest fills the air.
-	<</if>>
-<</if>>
-<<if !Time.schoolDay and Weather.precipitation is "rain" and Time.dayState is "day">>
-	Someone is swimming further out, past the dock.
-<</if>>
-<<if $sciencetrait gte 2 and !$plants_known.includes("lotus")>>
-	Lotus flowers float by you.
-<</if>>
-<br><br>
-
-<<if $laketeenspresent is 1 and $exposed gte 1>>
-	<<if hasSexStat("exhibitionism", 5)>>
-		You keep low beneath the water. You really wish to show your <<lewdness>>, but you restrain yourself from doing so and probably should find something to cover yourself with.
-	<<else>>
-		You keep low beneath the water to keep your <<lewdness>> from being seen. You'll need to find something to cover with.
-	<</if>>
-	<br><br>
-<</if>>
-
-<<if $lakeswim is 1>>
-	<<set $lakeswim to 0>>
-	You practise swimming in the lake.
-	<<if Weather.dayState is "night">>
-		<<if Weather.precipitation is "rain">>
-			The dark water dances with the rain. It's exhilarating, if scary.
-		<<else>>
-			The black water is gentle.
-		<</if>>
-	<<elseif Weather.dayState is "dusk">>
-		<<if Weather.precipitation is "rain">>
-			Rain agitates the cool water.
-		<<else>>
-			The sun falls over the trees, casting its double in the water.
-		<</if>>
-	<<elseif Weather.dayState is "dawn">>
-		<<if Weather.precipitation is "rain">>
-			Rain agitates the cool water.
-		<<else>>
-			The morning sun rises over the trees, casting its double in the water.
-		<</if>>
-	<<else>>
-		<<if Weather.precipitation is "rain">>
-			Rain agitates the warm water.
-		<<else>>
-			The water is warm and gentle.
-		<</if>>
-	<</if>>
-	<<physique 3>><<swimmingskilluse>><<pass 30>>
-	<br><br>
-<</if>>
-
-<<if $phase is 1>>
-	<<set $phase to 0>>
-	You improvise a garment made from reeds and lilies and tie it around your chest. It's fragile and revealing, and you don't think you could take it off without breaking it, but it's better than nothing.
-	<<plantupper "seaweed">>
-	<br><br>
-	<<if $rng gte 91 and $parasite.nipples.name is undefined and $parasitedisable is "f">>
-		Your satisfaction is interrupted by a pinching sensation on your <<nipples>>. Shocked, you pull down your top to find the culprit. Two small and soft invertebrates have latched to your chest. They massage and suck your nipples as if trying to nurse. They don't hurt at all, but the sensations are arousing you. You tug them in a bid to be free of their molestation, but they cling too tightly. What's more, touching them with any amount of force makes them suck more intensely. You'll need help to remove them.
-		<<parasite nipples urchin>><<garousal>><<arousal 600 "breasts">>
-		<br><br>
-	<</if>>
-	<<exposure>>
-<</if>>
-<<if $phase is 2>>
-	<<set $phase to 0>>
-	You improvise a garment made from reeds and lilies and tie it around your waist. It's fragile and revealing, and you don't think you could take it off without breaking it, but it's better than nothing.
-	<<plantlower "seaweed">>
-	<br><br>
-	<<if $parasite.penis.name is "parasite" or $parasite.clit.name is "parasite">>
-		/* Prevents the 2 types of parasites from interacting */
-	<<elseif $rng gte 91 and $parasite.penis.name is undefined and $player.penisExist and $parasitedisable is "f" and !playerChastity("penis")>>
-		Your satisfaction is interrupted by a pinching sensation on your <<penis>>. Shocked, you lift your skirt to find the culprit. A small and soft invertebrate has latched on. It massages and sucks as if trying to nurse. It doesn't hurt at all, but the sensations are making you feel shamefully aroused. You tug it in a bid to be free of its molestation, but it clings too tightly. What's more, touching it with any amount of force makes it suck more intensely. You'll need help to remove it.
-		<<parasite penis urchin>><<garousal>><<arousal 600 "genitals">>
-		<br><br>
-	<<elseif $rng gte 91 and $parasite.clit.name is undefined and $player.vaginaExist and $parasitedisable is "f" and !playerChastity("hidden") and !$player.penisExist>>
-		Your satisfaction is interrupted by a pinching sensation on your <<pussy>>. Shocked, you lift your skirt to find the culprit. A small and soft invertebrate has latched onto your clit. It massages and sucks as if trying to nurse. It doesn't hurt at all, but the sensations are making you feel shamefully aroused. You tug it in a bid to be free of its molestation, but it clings too tightly. What's more, touching it with any amount of force makes it suck more intensely. You'll need help to remove it.
-		<<parasite clit urchin>><<garousal>><<arousal 600 "genitals">>
-		<br><br>
-	<</if>>
-	<<exposure>>
-<</if>>
-
-<<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
-<<if $stress gte $stressmax and !$possessed>>
-	<<passoutlake>>
-<<elseif $foresthunt gte 10>>
-	<<foresthunt>>
-<<elseif $danger gte (9900 - ($allure / 2)) and $eventskip is 0>>
-	<<eventlakewater>>
-<<else>>
-	<<swimicon "back">><<link [[Practise swimming (0:30)|Lake Shallows]]>><<stress -6>><<tiredness 6>><<set $lakeswim to 1>><<slimeEventEnd "swimming">><</link>><<gswimming>><<lstress>><<gtiredness>>
-	<br>
-	<<if $worn.upper.exposed gte 2 and $worn.under_upper.exposed gte 1
-	or $worn.upper.exposed gte 2 and $underupperwetstage gte 3
-	or $upperwetstage gte 3 and $worn.under_upper.exposed gte 1
-	or $upperwetstage gte 3 and $underupperwetstage gte 3>>
-		<<beachicon "seaweed">><<link [[Make a top out of plants (0:20)|Lake Shallows]]>><<pass 20>><<set $phase to 1>><</link>>
-		<br>
-	<</if>>
-	<<if $worn.lower.exposed gte 2 and $worn.under_lower.exposed gte 1
-	or $worn.lower.exposed gte 2 and $underlowerwetstage gte 3
-	or $lowerwetstage gte 3 and $worn.under_lower.exposed gte 1
-	or $lowerwetstage gte 3 and $underlowerwetstage gte 3>>
-		<<beachicon "seaweed">><<link [[Make a skirt out of plants (0:20)|Lake Shallows]]>><<pass 20>><<set $phase to 2>><</link>>
-		<br>
-	<</if>>
-	<<if $sciencetrait gte 2 and !$plants_known.includes("lotus")>>
-		<<icon "tending/lotus.png">> <<link [[Search for seeds (0:30)|Lake Lotus]]>><<set $plants_known.push("lotus")>><<pass 30>><<tending 6>><</link>><<gtending>>
-		<br>
-	<</if>>
-	<<if $exposed gte 1 and $laketeenspresent is 1>>
-		<br>
-	<<elseif $debug is 1>>
-		<<lakeicon "dock">><<link [[Swim to dock (0:10)|Lake Dock]]>><<pass 10>><</link>>
-		<br>
-	<</if>>
-	<<if $nextPassageCheck is "Lake Depths">>
-		<span class="nextLink"><<link [[Further.|Lake Depths]]>><<pass 12>><</link>></span>
-	<<else>>
-		<<swimicon>><<link [[Swim further out (0:12)|Lake Depths]]>><<pass 12>><</link>>
-	<</if>>
-	<br>
-	<<if $exposed gte 1 and $laketeenspresent is 1>>
-		<<if $exposed gte 2 and hasSexStat("exhibitionism", 5)>>
-			<<lakeicon>><<link [[Leave the water exposed (0:02)|Lake Shore Exposed]]>><<set $phase to 0>><<pass 2>><</link>><<exhibitionist5>>
-		<<elseif $exposed gte 1 and hasSexStat("exhibitionism", 4)>>
-			<<lakeicon>><<link [[Leave the water exposed (0:02)|Lake Shore Exposed]]>><<set $phase to 1>><<pass 2>><</link>><<exhibitionist4>>
-		<</if>>
-	<<else>>
-		<<lakeicon>><<link [[Shore (0:02)|Lake Shore]]>><<pass 2>><</link>>
-		<br>
-	<</if>>
-	<<set $eventskip to 0>>
-<</if>>
-
-:: Lake Shore Exposed
 <<effects>>
-<<fameschoolex 5>>
-<<generatey1>><<generatey2>>
-<<if ($phase is 0 and ($uncomfortable.nude is false) or ($phase is 1 and $uncomfortable.underwear is false))>>
-	In a moment of daring, you casually emerge from the lake despite your <<lewdness>>. <<flaunting>> you stroll right past a group of students.
-	It takes a moment for anyone to notice, but eventually a <<person1>><<person>> gasps and points at you, drawing the attention of several more.
-	<br><br>
+You lie back on the grass, panting.
+<br><br>
+<<endmasturbation>>
+<<endcombat>>
+<br><br>
+<<link [[Next|Nude Bask]]>><</link>>
+<br>
 
-	A few avert their eyes in embarrassment, but many more have their eyes glued to you as you stride over to the rocky alcove.
-	A <<person2>><<person>> especially takes an interest in you, but seems to hesitate before doing anything. You decide to increase your pace.
-	<br><br>
+:: Bath Masturbation
 
-	You sit by the rocky alcove, just out of sight. You wonder how many are still looking in your direction.
-<<else>>
-	In a moment of daring, you emerge from the lake despite your <<lewdness>>. You run right past a group of students, attempting to cover yourself however you can.
-	A <<person1>><<person>> points and laughs as you run, drawing the attention of several more. <<status -10>><<lcool>>
-	<br><br>
-
-	A few avert their eyes in embarrassment, but many more have their eyes glued to you as you stride over to the rocky alcove.
-	A <<person2>><<person>> especially takes an interest in you, and for a moment, you think <<hes>> going to chase you. You increase your pace.
-	<br><br>
-
-	You sit by the rocky alcove, just out of sight. You wonder how many are still looking in your direction.
+<<effects>>
+<<if $masturbationstart is 1>>
+	/* clear soap prop and any reequipped handheld items */
+	<<handheldon>><<handheldstrip>>
+	<<set $masturbationstart to 0>>
+	<<set $masturbationstat += 1>>
+	<<masturbationstart>>
 <</if>>
-<<if $phase is 0>>
-	<<exhibitionism5>>
+<<masturbationeffects>>
+<<masturbationactions>>
+<<masturbationControls>>
+
+:: Bath Masturbation Finish
+
+<<effects>>
+Doing this here means you can wash away the evidence.<<wash>>
+<br><br>
+
+<<endmasturbation>>
+<<endcombat>>
+<<handheldstrip>>
+
+<<wash>>You climb from the bath.
+<br><br>
+
+<<link [[Next|Bath Finish]]>><</link>>
+<br>
+
+:: Men's Toilets Masturbation
+<<effects>><<set _enableSexToys to true>>
+
+<<if $masturbationstart is 1>>
+	<<set $masturbationstart to 0>>
+	<<set $masturbationstat += 1>>
+	<<masturbationstart>>
+	You feel safer doing this here than at the orphanage. Bailey isn't going to be barging the door down.
+	<br><br>
+<</if>>
+
+<<masturbationeffects>>
+<<masturbationactions>>
+<<masturbationControls>>
+
+:: Men's Toilets Masturbation Finish
+<<effects>>
+
+<<if playerChastity()>>
+	You try to keep the noise down as you are afraid of being caught.
+	<br><br>
+<</if>>
+
+<<endmasturbation>>
+<<clotheson>>
+<<endcombat>>
+
+<<link [[Next|Men's Toilets]]>><</link>>
+<br>
+
+:: Women's Toilets Masturbation
+<<effects>><<set _enableSexToys to true>>
+
+<<if $masturbationstart is 1>>
+	<<set $masturbationstart to 0>>
+	<<set $masturbationstat += 1>>
+	<<masturbationstart>>
+	You feel safer doing this here than at the orphanage. Bailey isn't going to be barging the door down.
+	<br><br>
+<</if>>
+
+<<masturbationeffects>>
+<<masturbationactions>>
+<<masturbationControls>>
+
+:: Women's Toilets Masturbation Finish
+<<effects>>
+
+<<if playerChastity()>>
+	You try to keep the noise down as you are afraid of being caught.
+	<br><br>
+<</if>>
+
+<<endmasturbation>>
+<<clotheson>>
+<<endcombat>>
+
+<<link [[Next|Women's Toilets]]>><</link>>
+<br>
+
+:: School Boy's Toilets Masturbation
+<<effects>><<set _enableSexToys to true>>
+
+<<if $masturbationstart is 1>>
+	<<set $masturbationstart to 0>>
+	<<set $masturbationstat += 1>>
+	<<masturbationstart>>
+	You wonder what the other students would think of you if you were caught.
+	<br><br>
+<</if>>
+
+<<masturbationeffects>>
+<<masturbationactions>>
+<<masturbationControls>>
+
+:: School Boy's Toilets Masturbation Finish
+<<effects>>
+
+You listen out in case anyone snuck in while you were distracted. You don't hear anything.
+<br><br>
+
+<<endmasturbation>>
+<<clotheson>>
+<<endcombat>>
+
+<<link [[Next|School Boy's Toilets]]>><</link>>
+<br>
+
+:: School Girl's Toilets Masturbation
+<<effects>><<set _enableSexToys to true>>
+
+<<if $masturbationstart is 1>>
+	<<set $masturbationstart to 0>>
+	<<set $masturbationstat += 1>>
+	<<masturbationstart>>
+	You wonder what the other students would think of you if you were caught.
+	<br><br>
+<</if>>
+
+<<masturbationeffects>>
+<<masturbationactions>>
+<<masturbationControls>>
+
+:: School Girl's Toilets Masturbation Finish
+<<effects>>
+
+You listen out in case anyone snuck in while you were distracted. You don't hear anything.
+<br><br>
+
+<<endmasturbation>>
+<<clotheson>>
+<<endcombat>>
+
+<<link [[Next|School Girl's Toilets]]>><</link>>
+<br>
+
+:: Clearing Spring Masturbation
+<<water>><<effects>><<set _enableSexToys to true>>
+
+<<if $masturbationstart is 1>>
+	<<set $masturbationstart to 0>>
+	<<set $masturbationstat += 1>>
+	<<masturbationstart>>
+	You lie back and allow your hands to wander.
+	<br><br>
+<</if>>
+
+<<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
+
+<<if (!$edenpush and $danger gte (9900 - $allure) and (between(Time.hour, 6, 11) or Time.hour gt 14)) or $edenpush is 2>>
+	<<if $edenpush is 2>><<unset $edenpush>><</if>>
+
+	<<npc Eden>><<person1>>Out of nowhere, you feel your hands being grabbed by someone else's.
+	<br><br>
+
+	<<if C.npc.Eden.dom gte 75>>
+		"Let me," Eden says, as <<he>> guides your arms out of the way and
+		<<if $player.penisExist>>
+			grabs your <<penis>> in <<his>> hand.
+		<<elseif $player.vaginaExist>>
+			rubs <<his>> fingers over your <<clit>>.
+		<</if>>
+	<<else>>
+		"Let me," Eden says, as <<he>> guides your arms out of the way and slides <<his>> hand up your thigh.
+	<</if>>
+	<br><br>
+
+	<<link [[Push away|Clearing Spring Masturbation Push]]>><<npcincr Eden love -1>><<npcincr Eden dom -1>><</link>>
+	<br>
+	<<link [[Lean into Eden|Clearing Spring Masturbation Pre Sex]]>><<npcincr Eden love 1>><<npcincr Eden dom 1>><</link>><<promiscuous1>>
+	<br>
+
 <<else>>
+
+	<<masturbationeffects>>
+	<<masturbationactions>>
+	<<masturbationControls "edenPush">>
+<</if>>
+
+:: Clearing Spring Masturbation Push
+<<water>>
+<<effects>>
+<<set $edenpush to 1>>
+<<npc Eden>><<person1>> You gently push Eden away from you. <<He>> raises <<his>> eyebrows and shoots you an incredulous look, before shrugging and walking away from the spring.
+
+<<masturbationControls undefined "Clearing Spring Masturbation">>
+
+:: Clearing Spring Masturbation Pre Sex
+<<water>>
+<<effects>>
+<<endmasturbation>>
+<br>
+<<npc Eden>><<person1>> You gently pull Eden closer to you. <<He>> shoots you a surprised yet lustful look as <<he>> matches your movements. <<promiscuity1>>
+
+<<link [[Next|Clearing Spring Masturbation Sex]]>><<set $sexstart to 1>><</link>>
+
+:: Clearing Spring Masturbation Finish
+<<water>><<effects>>
+
+The gentle waters caress you as you open your eyes.
+<br><br>
+
+<<endmasturbation>>
+<<clotheson>>
+<<endcombat>>
+
+<<ind>><<link [[Stay in the spring (0:30)|Clearing Spring]]>><<endevent>><<pass 30>><<stress -6>><<set $phase to 1>><</link>><<lstress>>
+<br>
+<<getouticon>><<link [[Get out|Eden Clearing]]>><<clotheson>><</link>>
+
+:: Maths Lesson Masturbate
+<<effects>>
+
+<<if $masturbationstart is 1>>
+	<<set $masturbationstart to 0>>
+	<<set $masturbationstat += 1>>
+
+	You want to touch yourself, here in the middle of your maths lesson. You look around. Everyone's distracted.
+	<<if $whitneymaths is "seat">>
+		Only Whitney would notice.<<exhibitionism5>>
+	<<else>>
+		No one would notice.<<exhibitionism4>>
+	<</if>>
+
+	<<masturbationstart>>
+	<<set $timer to 20>>
+	<<set $mouth to "disabled">>
+<</if>>
+
+<<if $whitneymaths is "seat">>
+	You fondle yourself. Whitney watches with a smirk, interested in seeing how far you go.<<npcincr Whitney lust 1>><<glust>>
+<<else>>
+	You fondle yourself. The other students are so near, they could so easily see what you're doing.
+<</if>>
+<<garousal>><<arousal 100 "genitals">>
+<br>
+<<masturbationeffects>>
+<<masturbationactions>>
+<<masturbationControls `"timer|arousal100" + ($whitneymaths is "seat" ? "|whitneySeat" : "")`>>
+
+:: Maths Lesson Masturbate Finish
+<<set $outside to 0>><<set $location to "school">><<effects>>
+
+<<if $timer lte 0 and $orgasmdown gte 1>>
+	<<npc River>><<person1>>You hear River marching towards you mid-climax! You try to rearrange your clothing and sit upright, but you can't stop the spasms. When <<he>> realises what you're doing, <<his>> eyes widen and face drains of colour. "You... D-Deten..." <<His>> eyes roll backwards and <<he>> crumples into a heap.
+	<<ggdelinquency>><<detention 6>>
+	<br><br>
+
+	<<endmasturbation>>
+	<<endcombat>>
+
+	<<if $whitneymaths is "seat">>
+		<<npc Whitney>><<person1>>
+		"Fucking nice," Whitney says, grabbing your arm and pushing you over the desk. Unsure what just happened, the rest of the class watch as Whitney climbs on top of you.
+		<br><br>
+
+		<<link [[Next|Maths Whitney Sex]]>><<set $sexstart to 1>><</link>>
+		<br>
+	<<else>>
+		<<if hasSexStat("promiscuity", 5)>>
+			<<link [[Goad the class into a gang bang|Maths Lesson Gang Bang]]>><<endevent>><<set $sexstart to 1>><</link>><<promiscuous5>>
+			<br>
+		<</if>>
+		<<link [[Feign innocence|Maths Lesson Feign]]>><<clotheson>><<endevent>><</link>>
+		<br>
+	<</if>>
+
+<<else>>
+	<<if $timer lte 0>>
+		You hear River marching towards you! You quickly rearrange your clothing and sit upright. River stops beside you. "You're looking rather flushed," the teacher says. "You should see the nurse after class." You exhale as River walks away.
+	<<else>>
+		Not wanting to risk it further, you rearrange your clothing and sit upright. You don't think anyone noticed.
+	<</if>>
+	<<if $whitneymaths is "seat">>
+		<br><br>
+
+		"Don't worry," Whitney grins. "Your secret's safe with me, <<slut>>."
+	<</if>>
+	<br><br>
+	<<endmasturbation>>
+	<<clotheson>>
+	<<endcombat>>
+	<<towelup>>
+	Touching yourself in front of so many unaware people feels fantastic. It takes a while for your racing heart and flushed face to return to normal.
+	<br><br>
+
+	<<advancelesson>>
+
+	<<if $phase is 1>>
+		<<lessonEnd "mathsClassroom">>
+	<<else>>
+		<<lessonEvents "maths">>
+	<</if>>
+<</if>>
+
+:: Science Lesson Masturbate
+
+<<effects>>
+
+<<if $masturbationstart is 1>>
+	<<set $masturbationstart to 0>>
+	<<set $masturbationstat += 1>>
+
+	You want to touch yourself, here in the middle of your science lesson. You look around. Everyone's distracted. No one would notice.
 	<<exhibitionism4>>
+	<<masturbationstart>>
+	<<set $timer to 20>>
+	<<set $mouth to "disabled">>
 <</if>>
-<<link [[Next|Lake Shore]]>><<endevent>><<set $eventskip to 1>><</link>>
+
+You fondle yourself. The other students are so near, they could so easily see what you're doing.
+<<garousal>><<arousal 100 "genitals">>
 <br>
+<<masturbationeffects>>
+<<masturbationactions>>
+<<masturbationControls "timer|arousal100">>
 
-:: Lake Shallows Ice
+:: Science Lesson Masturbate Finish
+<<set $outside to 0>><<set $location to "school">><<effects>>
 
-<<set $outside to 1>><<set $location to "lake">><<set $bus to "lakeshallows">><<effects>><<lakeeffects>>
-<<if $laketeenspresent is 1>>
-	You are stood on the frozen lake near the shore. Students practise ice skating nearby.
-<<else>>
-	<<if Weather.precipitation is "snow">>
-		You are stood on the frozen lake near the shore. Snow blankets the ice, softening your footsteps.
-	<<else>>
-		You are stood alone on the frozen lake near the shore. The sound of the forest fills the air.
-	<</if>>
-<</if>>
-<<if $sciencetrait gte 2 and !$plants_known.includes("lotus")>>
-	You see lotus flowers trapped within the ice.
-<</if>>
-<br><br>
-
-<<if $laketeenspresent is 1 and $exposed gte 1>>
-	There's nowhere to hide. <<covered>>
+<<if $timer lte 0 and $orgasmdown gte 1>>
+	A loud bang sounds right behind you, mid-climax. Someone mixed something they shouldn't have, and it's drawing attention your way. You try to rearrange your clothing and act natural, but you can't stop the spasms. You find yourself the centre of attention, with everyone wondering what's wrong with you.
 	<br><br>
-<</if>>
 
-<<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
-<<if $stress gte $stressmax and !$possessed>>
-	<<passoutlake>>
-<<elseif $foresthunt gte 10>>
-	<<foresthunt>>
-<<elseif $danger gte (9900 - ($allure / 2)) and $eventskip is 0>>
-	<<eventlakeice>>
-<<else>>
-	<<eventlakesafe>>
-	<<lakereturnjourney>>
+	<<npc Sirris>><<person1>>Sirris rushes over to you, completely unaware of what you were doing. <<He>> looks at the <<generates2>><<person2>><<person>> behind you. "What were you mixing? Did you get any on <<phim>> or anything?" <<person1>><<he>> says. "Answer me!"
+	<br><br>
 
-	<<lakeicon "skate">><<link [[Ice skate (0:30)|Lake Skate]]>><<pass 30>><<tiredness 5>><<danceskill 5>><</link>><<gtiredness>><<gdanceskill>>
+	<<person2>>The <<person>> stares at Sirris, mouth agape. <<person1>>"Everyone, listen," the teacher says. "Your classmate may have something dangerous on <<phim>>. You, get the hose ready. Quick! I'm going to strip <<phim>>, then we need to wash <<phim>> down before the chemicals do any more damage!"
+	<br><br>
+
+	You try to protest, but the thought of being stripped renews your orgasm, sending you into another twitching fit. Sirris tugs your $worn.upper.name, pulling it up your chest and off your body. The class watches, astounded by the spectacle. Some are clearly eyeing up your <<breasts>>.
+	<br><br>
+
+	Sirris goes for your $worn.lower.name next, revealing your <<undies>> to the whole room.
+	<<if $worn.under_lower.type.includes("naked")>>
+		The class gasp as you're exposed in front of them.
+	<<else>>
+		<<He>> doesn't waste time and tugs your $worn.under_lower.name down your thighs. The class gasp as your <<genitals_are>> exposed to them.
+	<</if>>
+	<<if playerChastity()>>
+		<<He>> looks at your $worn.genitals.name in bewilderment. "What is this?" <<He>> tugs. "It won't come off. There's no time, we'll make do." <<He>> shakes <<his>> head.
+	<</if>>
+	<<upperruined>><<lowerruined>><<underruined>><<exposure>>
+	<<covered>>
+	<br><br>
+
+	"Done. Now the hose. Everyone stand back." <<He>> blasts you with cold water, knocking you off your seat. "I said stand back!" <<He>> continues to hose you down as the class watches, those at the back craning their necks to see.
+	<br><br>
+
+	<<wash>>
+
+	"Turn off the hose please," <<he>> says at last. The hose ceases its discharge and Sirris kneels beside you. <<He>> covers you with towels. "How are you feeling?" You can't find the words.
+	<<gtrauma>><<gstress>><<trauma 6>><<stress 6>><<gpain>><<pain 5>>
+	<br><br>
+
+	<<link [[Next|Science Lesson Masturbate Hose]]>><</link>>
 	<br>
-	<<if $sciencetrait gte 2 and !$plants_known.includes("lotus")>>
-		<<icon "tending/lotus.png">> <<link [[Search for seeds (0:30)|Lake Lotus Ice]]>><<set $plants_known.push("lotus")>><<pass 30>><<tending 6>><</link>><<gtending>>
-		<br>
-	<</if>>
-	<<if $nextPassageCheck is "Lake Depths Ice">>
-		<<ind>><span class="nextLink"><<link [[Further (0:12)|Lake Depths Ice]]>><<pass 12>><</link>></span>
-	<<else>>
-		<<getinicon>><<link [[Walk further out (0:12)|Lake Depths Ice]]>><<pass 12>><</link>>
-	<</if>>
-	<br>
-	<<lakeicon>><<link [[Shore (0:02)|Lake Shore]]>><<pass 2>><</link>>
-	<br>
-	<<set $eventskip to 0>>
-<</if>>
-
-:: Lake Lotus
-<<effects>><<wearProp "lotus">>
-
-You swim among the lotus flowers, gathering seeds. <span class="gold">You can now grow <<icon "tending/lotus.png">> lotus.</span> <i>Lotus are valuable, but need a special environment to grow.</i>
-<br><br>
-
-<<link [[Next|Lake Shallows]]>><<handheldon>><</link>>
-<br>
-
-:: Lake Lotus Ice
-<<effects>><<wearProp "lotus">>
-
-You free the lotus flowers from the ice, gathering the seeds. <span class="gold">You can now grow <<icon "tending/lotus.png">> lotus.</span> <i>Lotus are valuable, but need a special environment to grow.</i>
-<br><br>
-
-<<link [[Next|Lake Shallows Ice]]>><<handheldon>><</link>>
-<br>
-
-:: Lake Depths
-
-<<set $outside to 1>><<set $location to "lake">><<set $bus to "lakedepths">><<water>><<effects>><<lakeeffects>>
-<<if $laketeenspresent is 1>>
-	You are swimming in the middle of the lake near the dock. You see several students hanging out on and around it.
 <<else>>
-	<<if Weather.precipitation is "rain">>
-		You are swimming in the lake near the shore. The rain is so thick you can't see the shore. An endless deluge surrounds you in all directions.
+	<<if $timer lte 0>>
+		A loud bang sounds right behind you. Someone mixed something they shouldn't have, and it's drawing attention your way. You quickly rearrange your clothing and hope your flushed and dishevelled look is put down to shock.
 	<<else>>
-		You are swimming in the middle of the lake near the dock.
+		Not wanting to risk it further, you rearrange your clothing and sit upright. You don't think anyone noticed.
 	<</if>>
-<</if>>
-<<if !Time.schoolDay and Weather.precipitation is "rain" and Time.dayState is "day">>
-	<span class="lblue">Mason swims nearby.</span>
-<</if>>
-<br><br>
+	<br><br>
+	<<endmasturbation>>
+	<<clotheson>>
+	<<endcombat>>
 
-<<if $laketeenspresent is 1 and $exposed gte 1>>
-	<<if hasSexStat("exhibitionism", 5)>>
-		You keep low beneath the water. You really wish to show your <<lewdness>>, but you restrain yourself from doing so and probably should find something to cover yourself with.
+	<<towelup>>
+
+	Touching yourself in front of so many unaware people feels fantastic. It takes a while for your racing heart and flushed face to return to normal.
+	<br><br>
+
+	<<advancelesson>>
+
+	<<if $phase is 1>>
+		<<lessonEnd "scienceClassroom">>
 	<<else>>
-		You keep low beneath the water to keep your <<lewdness>> from being seen. You'll need to find something to cover with.
-	<</if>>
-	<br><br>
-<</if>>
-
-<<if $lakeswim is 1>>
-	<<set $lakeswim to 0>>
-	You practise swimming in the lake.
-	<<if Weather.dayState is "night">>
-		<<if Weather.precipitation is "rain">>
-			The dark water dances with the rain. It's exhilarating, if scary.
-		<<else>>
-			The black water is gentle.
-		<</if>>
-	<<elseif Weather.dayState is "dusk">>
-		<<if Weather.precipitation is "rain">>
-			Rain agitates the cool water.
-		<<else>>
-			The evening sun falls over the trees, casting its double in the water.
-		<</if>>
-	<<elseif Weather.dayState is "dawn">>
-		<<if Weather.precipitation is "rain">>
-			Rain agitates the cool water.
-		<<else>>
-			The morning sun rises over the trees, casting its double in the water.
-		<</if>>
-	<<else>>
-		<<if Weather.precipitation is "rain">>
-			Rain agitates the warm water.
-		<<else>>
-			The water is warm and gentle.
-		<</if>>
-	<</if>>
-	<<physique 3>><<swimmingskilluse>><<pass 30>>
-	<br><br>
-<</if>>
-
-<<if $phase is 1>>
-	<<set $phase to 0>>
-	You improvise a garment made from reeds and lilies and tie it around your chest. It's fragile and revealing, and you don't think you could take it off without breaking it, but it's better than nothing.
-	<<plantupper "seaweed">>
-	<br><br>
-	<<if $rng gte 91 and $parasite.nipples.name is undefined and $parasitedisable is "f">>
-		Your satisfaction is interrupted by a pinching sensation on your <<nipples>>. Shocked, you pull down your top to find the culprit. Two small and soft invertebrates have latched to your chest. They massage and suck your nipples as if trying to nurse. They don't hurt at all, but the sensations are arousing you. You tug them in a bid to be free of their molestation, but they cling too tightly. What's more, touching them with any amount of force makes them suck more intensely. You'll need help to remove them.
-		<<parasite nipples urchin>><<garousal>><<arousal 600 "breasts">>
-		<br><br>
-	<</if>>
-<</if>>
-<<if $phase is 2>>
-	<<set $phase to 0>>
-	You improvise a garment made from reeds and lilies and tie it around your waist. It's fragile and revealing, and you don't think you could take it off without breaking it, but it's better than nothing.
-	<<plantlower "seaweed">>
-	<br><br>
-	<<if $parasite.penis.name is "parasite" or $parasite.clit.name is "parasite">>
-		/* Prevents the 2 types of parasites from interacting */
-	<<elseif $rng gte 91 and $parasite.penis.name is undefined and $player.penisExist and $parasitedisable is "f" and !playerChastity("penis")>>
-		Your satisfaction is interrupted by a pinching sensation on your <<penis>>. Shocked, you lift your skirt to find the culprit. A small and soft invertebrate has latched on. It massages and sucks as if trying to nurse. It doesn't hurt at all, but the sensations are making you feel shamefully aroused. You tug it in a bid to be free of its molestation, but it clings too tightly. What's more, touching it with any amount of force makes it suck more intensely. You'll need help to remove it.
-		<<parasite penis urchin>><<garousal>><<arousal 600 "genitals">>
-		<br><br>
-	<<elseif $rng gte 91 and $parasite.clit.name is undefined and $player.vaginaExist and $parasitedisable is "f" and !playerChastity("hidden")>>
-		Your satisfaction is interrupted by a pinching sensation on your <<pussy>>. Shocked, you lift your skirt to find the culprit. A small and soft invertebrate has latched onto your clit. It massages and sucks as if trying to nurse. It doesn't hurt at all, but the sensations are making you feel shamefully aroused. You tug it in a bid to be free of its molestation, but it clings too tightly. What's more, touching it with any amount of force makes it suck more intensely. You'll need help to remove it.
-		<<parasite clit urchin>><<garousal>><<arousal 600 "genitals">>
-		<br><br>
+		<<lessonEvents "science">>
 	<</if>>
 <</if>>
 
-<<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
-<<if $stress gte $stressmax and !$possessed>>
-	<<passoutlake>>
-<<elseif $foresthunt gte 10>>
-	<<foresthunt>>
-<<elseif $danger gte (9900 - ($allure + 1000)) and $eventskip is 0 and $lakesurface is 1>>
-	<span class="purple">Something followed you from the depths.</span> <<eventlakewater>>
-<<elseif $danger gte (9900 - ($allure / 2)) and $eventskip is 0>>
-	<<eventlakewater>>
-<<else>>
-	<<swimicon>><<link [[Practise swimming (0:30)|Lake Depths]]>><<stress -6>><<tiredness 6>><<set $lakeswim to 1>><<slimeEventEnd "swimming">><</link>><<gswimming>><<lstress>><<gtiredness>>
-	<br>
-	<<if !Time.schoolDay and Weather.precipitation is "rain" and Time.dayState is "day" and $daily.masonSpoken isnot 1 and !$possessed>>
-		<<if $mason_count gte 1>>
-			<<swimicon>><<link [[Swim out to Mason (0:05)|Lake Mason]]>><<pass 5>><<set $daily.masonSpoken to 1>><</link>>
-			<br>
-		<<else>>
-			<<swimicon>><<link [[Swim out to Mason (0:05)|Lake Mason Intro]]>><<pass 5>><</link>>
-			<br>
-		<</if>>
-	<</if>>
-	<<if $worn.upper.exposed gte 2 and $worn.under_upper.exposed gte 1
-	or $worn.upper.exposed gte 2 and $underupperwetstage gte 3
-	or $upperwetstage gte 3 and $worn.under_upper.exposed gte 1
-	or $upperwetstage gte 3 and $underupperwetstage gte 3>>
-		<<beachicon "seaweed">><<link [[Make a top out of plants (0:20)|Lake Depths]]>><<pass 20>><<set $phase to 1>><</link>>
-		<br>
-	<</if>>
-	<<if $worn.lower.exposed gte 2 and $worn.under_lower.exposed gte 1
-	or $worn.lower.exposed gte 2 and $underlowerwetstage gte 3
-	or $lowerwetstage gte 3 and $worn.under_lower.exposed gte 1
-	or $lowerwetstage gte 3 and $underlowerwetstage gte 3>>
-		<<beachicon "seaweed">><<link [[Make a skirt out of plants (0:20)|Lake Depths]]>><<pass 20>><<set $phase to 2>><</link>>
-		<br>
-	<</if>>
-	<<if $nextPassageCheck is "Lake Underwater">>
-		<<swimicon "down">><span class="nextLink"><<link [[Down.|Lake Underwater]]>><<pass 1>><</link>></span>
-	<<else>>
-		<<swimicon "dive">><<link [[Dive (0:01)|Lake Underwater]]>><<pass 1>><</link>>
-	<</if>>
-	<br>
-	<<swimicon "back">><<link [[Swim towards shore (0:12)|Lake Shallows]]>><<pass 12>><</link>>
-	<br><br>
-
-	<<if $exposed gte 1 and $laketeenspresent is 1>>
-	<<elseif $debug is 1>>
-		<<lakeicon "dock">><<link [[Swim to dock (0:02)|Lake Dock]]>><<pass 2>><</link>>
-		<br>
-	<</if>>
-	<<set $eventskip to 0>>
-<</if>>
-<<set $lakesurface to 0>>
-
-:: Lake Depths Ice
-<<set $outside to 1>><<set $location to "lake">><<set $bus to "lakedepths">><<effects>><<lakeeffects>>
-
-You are in the middle of the frozen lake, near the swimming dock.
-<<if Weather.precipitation === "snow">>
-	Thick snow makes it difficult to see the surrounding forest.
-<</if>>
-<br><br>
-
-<<if !Weather.isFrozen("lake")>>
-	As the temperature increases, the ice suddenly gives way. You plunge into icy water.<<ggstress>><<stress 18>>
-	<br><br>
-	<<link [[Next|Lake Underwater]]>><</link>>
-	<<exit>>
-<</if>>
-
-<<if !Time.schoolDay and Weather.isFrozen("lake") and Time.dayState is "day">>
-	Someone's dug through the ice beside the swimming dock.
-<<else>>
-	<<if $lake_ice_broken is undefined>>
-		Someone left equipment on the swimming dock, including a shovel. The ice is thin here. You could break through, with some effort.
-	<<else>>
-		There's a hole in the ice, allowing access to the water below.
-	<</if>>
-<</if>>
-<br><br>
-
-<<if $exposed gte 1>>
-	<<covered>> There's nowhere to hide out here.
-	<br><br>
-<</if>>
-
-<<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
-<<if $stress gte $stressmax and !$possessed>>
-	<<passoutlake>>
-<<elseif $foresthunt gte 10>>
-	<<foresthunt>>
-<<elseif $danger gte (9900 - ($allure + 1000)) and $eventskip is 0 and $lakesurface is 1>>
-	<span class="purple">Something followed you from the depths.</span> <<eventlakewater>>
-<<elseif $danger gte (9900 - ($allure / 2)) and $eventskip is 0>>
-	<<eventlakeice>>
-<<else>>
-	<<if !Time.schoolDay and Weather.isSnow and Time.dayState is "day">>
-		<<set $lake_ice_broken to 1>>
-	<</if>>
-	<<if $nextPassageCheck is "Lake Depths Ice Break">>
-		<<swimicon "down">><span class="nextLink"><<link [[Down.|Lake Depths Ice Break]]>><<pass 12>><</link>></span>
-		<br>
-	<<elseif $lake_ice_broken is undefined>>
-		<<swimicon "break">><<link [[Break the ice (0:30)|Lake Ice Break]]>><<pass 30>><<set $lake_ice_broken to 2>><<tiredness 3>><</link>><<gtiredness>>
-		<br>
-	<<else>>
-		<<swimicon "dive">><<link [[Dive (0:01)|Lake Underwater]]>><<pass 1>><</link>>
-		<<swim_check>> <<if _swim_check isnot 1 and $statdisable is "f">> | <span class="purple">You are not wearing any swimwear!</span> <</if>>
-		<br>
-	<</if>>
-
-	<<lakeicon>><<link [[Walk towards shore (0:12)|Lake Shallows Ice]]>><<pass 12>><</link>>
-	<br><br>
-
-	<<set $eventskip to 0>>
-<</if>>
-<<set $lakesurface to 0>>
-
-
-:: Lake Ice Break
-<<effects>><<wearProp "shovel">>
-
-You lift the shovel, and thrust it into the ice. It's hard work, but you manage to make a sizeable hole.
-<br><br>
-
-<<link [[Next|Lake Depths Ice]]>><<handheldon>><</link>>
-<br>
-
-
-:: Lake Dock
-
-<<set $outside to 1>><<set $location to "lake">><<effects>><<lakeeffects>>
-<<if $laketeenspresent is 1>>
-	You are on the swimming dock. Several students accompany you on the dock. There is a bikini sitting on the edge with no signs of its owner.
-<<elseif Weather.precipitation is "rain">>
-	You are on the swimming dock. The sound of the rain hitting the water surrounding you is almost deafening. <<if $hallucinations gte 1>>You can't see far, yet you feel like something's watching you.<</if>>
-<<elseif Time.dayState is "day">>
-	You are on the swimming dock. The lake looks placid. You feel like the only person in the entire world.
-<<elseif Time.dayState is "night">>
-	<<if $laketeensfire is 1>>
-		You are on the swimming dock. You can see the fire from the party a little ways in the distance. Stars dot the water. You feel like you are floating among them.
-	<<else>>
-		You are on the swimming dock. Stars dot the water. You feel like you are floating among them. <<if $hallucinations gte 1>>You can't see far in the dark, yet you feel like something's watching you.<</if>>
-	<</if>>
-<<else>>
-	You are on the swimming dock. The only sounds you hear are waves crashing upon the sides of the dock.
-<</if>>
-<br><br>
-
-<<link [[Go swimming|Lake Depths]]>><</link>>
-<br>
-
-:: Lake Meditate
-
-<<set $outside to 1>><<set $location to "lake">><<effects>><<lakeeffects>>
-<<if $phase is 1>>
-	<<set $phase to 0>>
-	You sit on the rock and look out at the lake.
-	<<if !Weather.isFreezing>>
-		<<if Time.dayState is "night">>
-			<<if Weather.precipitation is "rain">>
-				The violent darkness roils before you.
-			<<else>>
-				The blackness stretches before you.
-			<</if>>
-		<<else>>
-			<<if Weather.precipitation is "rain">>
-				The water dances with raindrops.
-			<<else>>
-				The water is almost perfect in its stillness.
-			<</if>>
-		<</if>>
-	<<else>>
-		<<if Time.dayState is "night">>
-			<<if Weather.precipitation is "snow">>
-				Silent snow settles in darkness.
-			<<else>>
-				The blackness stretches before you.
-			<</if>>
-		<<else>>
-			<<if Weather.isSnow is "snow">>
-				Snow blankets the ice.
-			<<else>>
-				The ice reflects the world.
-			<</if>>
-		<</if>>
-	<</if>>
-	<i>Meditation effectiveness depends on willpower.</i>
-<<elseif $phase is 2>>
-	<<set $phase to 0>>
-	With some effort you quiet your thoughts until they still.
-	<br><br>
-
-	An hour passes, and you feel less burdened.
-<<elseif $phase is 3>>
-	<<set $phase to 0>>
-	You detach yourself from your thoughts. You witness them come and go, as if summoned by something else.
-
-	<<if $awareness gte 400>>
-		<br><br>
-		The <<if Weather.isFrozen("lake")>>ice<<else>>water<</if>> parts, revealing a gaping abyss. Terror shivers up your spine, and breaks your concentration.
-		<<gtrauma>><<gstress>><<trauma 6>><<stress 6>>
-	<</if>>
-<<elseif $phase is 4 or $phase is 5>>
-	<<set $phase to 0>>
-	Your thoughts turn to your <<penis>>, and the mocking way people regard it. The torment returns. You try to remain detached.
-	<br><br>
-
-	An hour passes, and for a few moments the weight of scrutiny lifts.
-	<<if $acceptance_penis_small gte 1000>>
-		<<set _penisSize to setup.penisSizes[$player.penissize + 2].toUpperFirst()>>
-		<br><br>
-		Realisation dawns as you lean back. Your <<penis>> is beautiful. Why should you care what other people say about it? You've gained the <span class="green">Acceptance: _penisSize Penis</span> trait.
-	<</if>>
-<<elseif $phase is 6>>
-	<<set $phase to 0>>
-	Your thoughts turn to your <<penis>>, and the mocking way people regard it. The torment returns. You try to remain detached.
-	<br><br>
-
-	An hour passes, and for a few moments the weight of scrutiny lifts.
-	<<if $acceptance_penis_big gte 1000>>
-		<<set _penisSize to setup.penisSizes[$player.penissize + 2].toUpperFirst()>>
-		<br><br>
-		Realisation dawns as you lean back. Your <<penis>> is beautiful. Why should you care what other people say about it? You've gained the <span class="green">Acceptance: _penisSize Penis</span> trait.
-	<</if>>
-<<elseif $phase is 7>>
-	<<set $phase to 0>>
-	Your thoughts turn to your flat chest, and the mocking way people regard it. The torment returns. You try to remain detached.
-	<br><br>
-
-	An hour passes, and for a few moments the weight of scrutiny lifts.
-	<<if $acceptance_breasts_small gte 1000>>
-		<br><br>
-		Realisation dawns as you lean back. Your chest is beautiful. Why should you care what other people say about it? You've gained the <span class="green">Acceptance: Flat Chest</span> trait.
-	<</if>>
-<<elseif $phase is 8>>
-	<<set $phase to 0>>
-	Your thoughts turn to your <<breasts>>, and the mocking way people regard them. The torment returns. You try to remain detached.
-	<br><br>
-
-	An hour passes, and for a few moments the weight of scrutiny lifts.
-	<<if $acceptance_breasts_small gte 1000>>
-		<br><br>
-		<<set _breastSizeName to setup.breastsizes[$player.breastsize].toUpperFirst()>>
-		Realisation dawns as you lean back. Your <<breasts>> beautiful. Why should you care what other people say about them? You've gained the <span class="green">Acceptance: _breastSizeName Breasts</span> trait.
-	<</if>>
-<<elseif $phase is 9>>
-	<<set $phase to 0>>
-	Your thoughts turn to your <<breasts>>, and the mocking way people regard them. The torment returns. You try to remain detached.
-	<br><br>
-
-	An hour passes, and for a few moments the weight of scrutiny lifts.
-	<<if $acceptance_breasts_big gte 1000>>
-		<<set _breastSizeName to setup.breastsizes[$player.breastsize].toUpperFirst()>>
-		<br><br>
-		Realisation dawns as you lean back. Your <<breasts>> are beautiful. Why should you care what other people say about them? You've gained the <span class="green">Acceptance: _breastSizeName Breasts</span> trait.
-	<</if>>
-<<elseif $phase is 10>>
-	<<set $phase to 0>>
-	Your thoughts turn to your <<print playerAwareTheyArePregnant() ? "pregnant belly" : "pregnant looking belly">>, and the mocking way people regard it. The torment returns. You try to remain detached.
-	<br><br>
-
-	An hour passes, and for a few moments the weight of scrutiny lifts.
-	<<if $acceptance_pregnancy gte 1000>>
-		<br><br>
-		Realisation dawns as you lean back. Your belly is beautiful. Why should you care what other people say about it? You've gained the <span class="green"><<print playerAwareTheyArePregnant() ? "Acceptance: Pregnant Belly" : "Acceptance: Pregnant Looking Belly">></span> trait.
-	<</if>>
-<</if>>
-<br><br>
-
-<<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
-<<if $stress gte $stressmax and !$possessed>>
-	<<passoutlake>>
-<<elseif $foresthunt gte 10>>
-	<<foresthunt>>
-<<else>>
-	<<meditateoptions>>
-<</if>>
-<<set $eventskip to 0>>
-
-:: Lake Halloween Invite Inquire
+:: English Lesson Masturbate
 <<effects>>
 
-You approach the pair.
+<<if $masturbationstart is 1>>
+	<<set $masturbationstart to 0>>
+	<<set $masturbationstat += 1>>
+
+	<<if $kylarenglishstate is "active">>
+		You want to touch yourself, here in the middle of your English lesson. You look around. Everyone's distracted. No one would notice. Except Kylar.
+		<<exhibitionism5>>
+	<<else>>
+		You want to touch yourself, here in the middle of your English lesson. You look around. Everyone's distracted. No one would notice.
+		<<exhibitionism4>>
+	<</if>>
+	<br><br>
+	<<masturbationstart>>
+	<<set $timer to 20>>
+	<<set $mouth to "disabled">>
+<</if>>
+
+<<if $kylarenglishstate is "active">>
+	You fondle yourself. The other students are so near, they could so easily see what you're doing. Kylar watches, completely enthralled.
+	<<garousal>><<arousal 100 "genitals">>
+<<else>>
+	You fondle yourself. The other students are so near, they could so easily see what you're doing.
+	<<garousal>><<arousal 100 "genitals">>
+<</if>>
+<br>
+<<masturbationeffects>>
+<<masturbationactions>>
+
+<<if $orgasmdown gte 1 and $kylarenglishstate is "active">>
+	Kylar watches your climax with awe.
+	<<glust>><<npcincr Kylar lust 5>>
+	<br><br>
+<</if>>
+
+<<masturbationControls `"timer|arousal100" + ($kylarenglishstate is "active" ? "|kylarSeat" : "")`>>
+
+:: English Lesson Masturbate Finish
+<<set $outside to 0>>
+<<set $location to "school">>
+<<effects>>
+
+<<if $kylarenglishstate is "active" and $worn.under_lower.exposed gte 1 and $worn.lower.exposed gte 2 and !playerChastity("hidden")>>
+	<<set $genderknown.pushUnique("Kylar")>>
+<</if>>
+
+<<if $timer lte 0 and $orgasmdown gte 1>>
+<!-- time ran out and successfully came -->
+	<<if $kylarenglishstate is "active">>
+		<<npc Kylar>><<generates2>><<person2>>A <<person>> leans over your desk to chat across the room. You try to stop touching yourself, but you can't control your spasms. <<He>> sees what you're doing. <<His>> mouth gapes for a moment, then <<he>> smiles. "Wow, you're a real pervert," <<he>> whispers. "I should let everyone know. Unless-" <<He>> shunts <<his>> desk closer to yours. "Unless you-"
+		<br><br>
+
+		<<Hes>> interrupted. Kylar lunges over your desk and drags <<him>> to the ground. <<person1>><<He>> straddles the <<person2>><<person>>, with one hand around <<his>> throat and the other clutching a knife. Someone screams.
+
+		"<<pShes>> mine," Kylar says, moving the knife closer to the <<persons>> face. "Mine."
+
+		<br><br>
+
+		Doren leaps over the table and grabs Kylar by the waist and wrist, hauling <<person1>><<him>> off the <<person2>><<person>>. <<person1>><<He>> is pulled backwards towards the exit. <<person1>><<He>> doesn't struggle.
+		<br><br>
+
+		The <<person2>><<person>> whimpers on the floor. <<His>> friends form a protective ring and shoot you evil looks. The rest of the class whisper amongst themselves until Doren's return. Kylar isn't with <<endevent>><<npc Doren>><<person1>><<him>>.
+		<br><br>
+		<<set $kylarenglishstate to "absent">>
+		<<clotheson>>
+		<<endmasturbation>>
+		<<endcombat>>
+
+		<<link [[Next|English Lesson Daydream]]>><</link>>
+		<br>
+	<<else>>
+	<!-- kylar is not in class -->
+		<<generates1>><<person1>>A <<person>> leans over your desk to chat across the room. You try to stop touching yourself, but you can't control your spasms. <<He>> sees what you're doing. <<His>> mouth gapes for a moment, then <<he>> smiles. "Wow, you're a real pervert," <<he>> whispers. "I should let everyone know. Unless-" <<He>> shunts <<his>> desk closer to yours. "Unless you wanna be nice to me." <<He>> grabs your wrist and places your hand on <<his>> crotch.
+		<br><br>
+
+		<<link [[Rub|English Rub]]>><<trauma 6>><<stress 6>><<sub 1>><</link>><<gtrauma>><<gstress>>
+		<br>
+		<<if hasSexStat("promiscuity", 4)>>
+			<<link [[Punish|English Punish]]>><<def 1>><</link>><<promiscuous4>>
+			<br>
+		<</if>>
+		<<link [[Refuse|English Rub Refuse]]>><<trauma 6>><<stress 6>><<detention 3>><<status -10>><</link>><<lcool>><<gdelinquency>><<gtrauma>><<gstress>>
+		<br>
+	<</if>>
+<<else>>
+	<!-- didn't come or didn't ran out of time -->
+	<<if $timer lte 0>>
+		Another student leans over your desk and starts chatting across the room. You cover yourself and look away. You hope no one noticed.
+		<<if $kylarenglishstate is "active">>
+			"Y-you're so lewd," Kylar gulps. "And brave."
+		<</if>>
+	<<else>>
+		<<if $kylarenglishstate is "active">>
+			Not wanting to risk it further, you rearrange your clothing and sit upright. "Y-you're so lewd," Kylar gulps. "And brave."
+		<<else>>
+			Not wanting to risk it further, you rearrange your clothing and sit upright. You don't think anyone noticed.
+		<</if>>
+	<</if>>
+
+	<<endmasturbation>>
+	<<clotheson>>
+	<<endcombat>>
+
+	<<towelup>>
+	<br><br>
+
+	Touching yourself in front of so many unaware people feels fantastic. It takes a while for your racing heart and flushed face to return to normal.
+	<br><br>
+
+	<<advancelesson>>
+
+	<<if $phase is 1>>
+		<<lessonEnd "englishClassroom">>
+	<<else>>
+		<<lessonEvents "english">>
+	<</if>>
+<</if>>
+
+
+
+:: History Lesson Masturbate Robin
+<<effects>>
+<<set $robin.stopmastur to 1>>
+
+You fondle yourself. Robin glances at you, then swats your hands away from your body. "You can't do that here," <<nnpc_he Robin>> says, <<nnpc_his Robin>> voice stern. "Only in private." <<nnpc_He Robin>> looks back to the front of the class.
+<br><br>
+
+<<nnpc_He Robin>> attracted too much attention. You won't be able to get away with it now.
+<br><br>
+
+<<link [[Next|History Lesson Daydream]]>><</link>>
+<br>
+
+:: History Lesson Masturbate
+<<effects>>
+
+<<if $masturbationstart is 1>>
+	<<set $masturbationstart to 0>>
+	<<set $masturbationstat += 1>>
+
+	You want to touch yourself, here in the middle of your history lesson. You look around. Everyone's distracted. No one would notice.
+	<<if $robinhistory is "seat">>
+		Except for Robin.
+		<<exhibitionism5>>
+	<<else>>
+		<<exhibitionism4>>
+	<</if>>
+	<br><br>
+	<<masturbationstart>>
+	<<set $timer to 20>>
+	<<set $mouth to "disabled">>
+<</if>>
+
+You continue to fondle yourself.
+
+<<if $robinhistory is "seat">>
+	<<if $timer is 20>>
+		Robin glances at you, and blushes as <<nnpc_he Robin>> realises what you're up to. "You can't do that here!" <<nnpc_he Robin>> says.
+		<br><br>
+		"Eyes up front," Winter interjects. Robin jolts upright, startled.
+	<<elseif $rng gte 67>>
+		Robin keeps a close eye on Winter.
+	<<elseif $rng gte 33>>
+		<<if $robinromance is 1>>
+			Robin can't keep <<nnpc_his Robin>> eyes away.
+		<<else>>
+			Robin tries to keep <<nnpc_his Robin>> gaze away from you, but does a poor job.
+		<</if>>
+	<<else>>
+		Robin blushes beside you.
+	<</if>>
+	<<if $orgasmdown gte 1>>
+		<<glust>><<npcincr Robin lust 1>>
+	<</if>>
+<</if>>
+<br><br>
+The other students are so near, they could so easily see what you're doing.
+<<garousal>><<arousal 100 "genitals">>
+<br>
+<<masturbationeffects>>
+<<masturbationactions>>
+<<masturbationControls `"timer|arousal100" + ($robinhistory is "seat" ? "|robinSeat" : "")`>>
+
+:: History Lesson Masturbate Finish
+<<set $outside to 0>><<set $location to "school">><<effects>>
+
+<<if $timer lte 0 and $orgasmdown gte 1>>
+	<<npc Winter>><<person1>>Winter decides to stand by your desk while lecturing, right in the middle of your orgasm. <<He>> stands with <<his>> back to you. You don't think anyone noticed.
+	<br><br>
+
+	<<endmasturbation>>
+	<<clotheson>>
+	<<endcombat>>
+	<<if !playerBellyVisible()>>
+		<<npc Winter>><<person1>>As your orgasm subsides, Winter turns to you and leans in close. "So you like touching yourself," <<he>> whispers. "I know just what to do with dirty <<girls>> like you. Come with me."
+		<br><br>
+
+		<<He>> stands upright. "Turn to page 117 please," <<he>> announces to the class. "I shan't be long." You follow <<him>> from the classroom, and into a storage room. It contains various antiques and props that you recognise from <<his>> lessons. <<He>> reaches into a wooden box and produces a metal chastity <<if $player.penisExist>>cage<<else>>belt<</if>>.
+		<br><br>
+
+		"Strip," <<he>> commands. <<He>> blows dust off the device. "You clearly can't control yourself. This is for your own good."
+		<br><br>
+
+		<<link [[Strip|History Masturbate Strip]]>><<sub 1>><<trauma 6>><<stress 6>><</link>><<gtrauma>><<gstress>>
+		<br>
+		<<link [[Refuse|History Masturbate Refuse]]>><<def 1>><<detention 3>><</link>><<gdelinquency>>
+		<br>
+	<<else>>
+		<<npc Winter>><<person1>>As your orgasm subsides, Winter turns to you and leans in close. "I understand that being with child can cause some hormonal issues," <<he>> says, glancing at your <<bellyDescription "pc">>. "Even so, please try to keep those things to a minimum. It's inappropriate." <<He>> turns away and leaves you to recover.
+		<br><br>
+
+		<<advancelesson>>
+		<<endevent>>
+
+		<<if $phase is 1>>
+			<<lessonEnd "historyClassroom">>
+		<<else>>
+			<<lessonEvents "history">>
+		<</if>>
+	<</if>>
+<<else>>
+	<<if $timer lte 0>>
+		Winter decides to stand by your desk while lecturing. You almost decide to continue and hope no one is paying attention, but you think better of it.
+	<<else>>
+		Not wanting to risk it further, you rearrange your clothing and sit upright. You don't think anyone noticed.
+	<</if>>
+	<<if $robinhistory is "seat">>
+		Robin looks relieved.
+	<</if>>
+	<br><br>
+	<<endmasturbation>>
+	<<clotheson>>
+	<<endcombat>>
+
+	<<towelup>>
+
+	Touching yourself in front of so many unaware people feels fantastic. It takes a while for your racing heart and flushed face to return to normal.
+	<br><br>
+
+	<<advancelesson>>
+
+	<<if $phase is 1>>
+		<<lessonEnd "historyClassroom">>
+	<<else>>
+		<<lessonEvents "history">>
+	<</if>>
+<</if>>
+
+:: Swimming Lesson Masturbate
+<<effects>>
+
+<<if $masturbationstart is 1>>
+	<<set $masturbationstart to 0>>
+	<<set $masturbationstat += 1>>
+
+	You want to touch yourself, here in the middle of the pool. You look around. Everyone's distracted. No one would notice what you're up to beneath the water.
+	<<exhibitionism4>>
+	<<masturbationstart>>
+	<<set $timer to 20>>
+	<<set $mouth to "disabled">>
+<</if>>
+
+You fondle yourself. The other students are so near, they could so easily see what you're doing.
+<<garousal>><<arousal 100 "genitals">>
+<br>
+<<masturbationeffects>>
+<<masturbationactions>>
+<<masturbationControls "timer|arousal100">>
+
+:: Swimming Lesson Masturbate Finish
+<<set $outside to 0>><<set $location to "pool">><<effects>>
+
+<<if $timer lte 0 and $orgasmdown gte 1>>
+	<<npc Mason>><<person1>>Mason asks the class to line up at one side of the pool. You're still shaking from your climax and struggle to keep up.
+
+	<<clotheson>>
+
+	Mason spots you shivering in the water. <<He>> dives in and shoots towards you, scooping you into <<his>> arms and onto the side of the pool. <<He>> clambers up after you and leans close. "Are you alright?" <<he>> asks.
+	<br><br>
+
+	<<link [[Nod|Swimming Masturbate Nod]]>><</link>>
+	<br>
+	<<if hasSexStat("promiscuity", 2)>>
+		<<link [[Kiss|Swimming Masturbate Kiss]]>><<status 1>><<detention 2>><</link>><<promiscuous2>><<gdelinquency>><<gcool>>
+		<br>
+	<</if>>
+<<else>>
+	<<if $timer lte 0>>
+		Mason asks the class to line up at one side of the pool. You won't continue to get away with it while packed so close to the other students.
+	<<else>>
+		Not wanting to risk it further, you stop. You don't think anyone noticed.
+	<</if>>
+	<br><br>
+	<<endmasturbation>>
+	<<clotheson>>
+	<<endcombat>>
+
+	Touching yourself in front of so many unaware people feels fantastic. It takes a while for your racing heart and flushed face to return to normal.
+	<br><br>
+
+	<<water>>
+	<<advancelesson>>
+
+	<<if $phase is 1>>
+		<<set $phase to 0>>
+		The bell rings, signifying the end of the lesson. You leave the classroom.
+		<br><br>
+
+		<<if $exposed lte 0>>
+			<<destinationpoolchangingroom>>
+		<<elseif $exposed gte 1>>
+			<<destinationpoolchangingroom "towels">>
+		<</if>>
+	<<else>>
+		<<if $exposed gte 1>>
+			<<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
+			<<if $danger gte (8900 - ($allure / 2))>>
+				<<eventsswimming>>
+			<<else>>
+				<<eventsswimmingsafe>>
+			<</if>>
+		<<elseif $exposed lte 0>>
+			<<set $danger to random(1, 10000)>><<set $dangerevent to 0>>
+			<<if $danger gte (8900 - ($allure / 10))>>
+				<<eventsswimming>>
+			<<else>>
+				<<eventsswimmingsafe>>
+			<</if>>
+		<</if>>
+	<</if>>
+<</if>>
+
+:: Science Lesson Masturbate Hose
+<<set $outside to 0>><<set $location to "school">><<effects>>
+
+"I'll have to dispose of your clothes," Sirris says. "You'll need to see the head after class for some spares." <<He>> helps you to your seat, making sure the towels remain covering you.
+<br><br>
+
+Sirris sends the <<person2>><<person>> to the headteacher, and the class commences. You shiver.
+<br><br>
+
+<<towelup>>
+<<endcombat>>
+
+<<advancelesson>>
+
+<<if $phase is 1>>
+	<<lessonEnd "scienceClassroom">>
+<<else>>
+	<<lessonEvents "science">>
+<</if>>
+
+:: Maths Lesson Gang Bang
+<<if $sexstart is 1>>
+	<<set $sexstart to 0>>
+	<<consensual>>
+	<<set $consensual to 1>>
+	<<neutral 1>>
+	<<generates1>><<generates2>><<generates3>><<generates4>><<generates5>><<generates6>><<maninit>>
+	<<set $enemytrust += 100>>
+
+	Still flushed from your play, you sprawl yourself across your desk. You fix a <<person1>><<person>> with your gaze, knowing <<hes>> more curious than most. "The teacher is gone, we should make the most of it. Why don't you come over here," you say. "I need someone to scratch my itch."
+	<br><br>
+
+	<<He>> walks over to you, you take <<his>> hand and place it on your <<breasts>>. <<Hes>> hesitant at first, but soon becomes more bold. You invite others to join, and soon a ring has formed around you. Other students remain seated, more embarrassed than aroused by your behaviour.<<famesex 30>><<promiscuity5>>
+<</if>>
+
+<<effects>>
+<<effectsman>>
+<<man>>
+<<audience>>
+<<stateman>>
+<br><br>
+<<actionsman>>
+
+<<if _combatend>>
+	<span id="next"><<link [[Next|Maths Lesson Gang Bang Finish]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|Maths Lesson Gang Bang]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: Maths Lesson Gang Bang Finish
+
+<<effects>>
+<<if $finish is 1>>
+	The crowd backs away from you as you sit back up. You wonder if they might start doing things to each other, but they don't seem comfortable with the idea.
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+<<elseif $enemyarousal gte $enemyarousalmax>>
+	<<ejaculation>>
+	The other students lie around your desk in a satisfied pile.
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+<<elseif $enemyhealth lte 0>>
+	You knock the students away from you. They get the hint, and cease pestering you.
+	<br><br>
+	<<clotheson>>
+	<<endcombat>>
+<</if>>
+<<npc River>><<person1>>
+River soon comes to and looks around with bleary eyes. <<He>> fixes you with a gaze, but doesn't say anything. <<He>> climbs to <<his>> feet and continues the lesson as if nothing happened.
+<br><br>
+<<link [[Next|Maths Lesson Daydream]]>><<endevent>><</link>>
+
+
+
+:: English Rub
+
+<<set $outside to 0>><<set $location to "school">><<effects>>
+<<if $pronoun is "m">>You unzip <<his>> fly<<else>>You lift up <<his>> skirt<</if>> and rub <<his>> <<if $NPCList[0].penis isnot "none">>penis<<else>>pussy<</if>>. <<He>> leans forward and faces <<his>> desk to conceal <<his>> reaction. <<He>> doesn't last long, and cums on your fingers before anyone notices.
+<br><br>
+You pull your hand away. "S-see," <<he>> gasps. "That wasn't so bad, was it? Don't worry pervert, your secret's safe with me."
+<br><br>
+<<clotheson>>
+<<endmasturbation>>
+<<endcombat>>
+<<link [[Next|English Lesson Daydream]]>><</link>>
+<br>
+
+:: English Punish
+
+<<set $outside to 0>><<set $location to "school">><<effects>>
+<<if $pronoun is "m">>You unzip <<his>> fly<<else>>You lift up <<his>> skirt<</if>> and rub <<his>> <<if $NPCList[0].penis isnot "none">>penis<<else>>pussy<</if>>. <<He>> leans forward and faces <<his>> desk to conceal <<his>> reaction. <<He>> doesn't last long, and cums on your fingers before anyone notices.
+<br><br>
+"S-see," <<he>> gasps. "That wasn't so bad, was it? Don't worry pervert, your secret's safe with me."
+<br><br>
+<<He>> tries to pull <<his>> desk and chair away, but you grab <<his>> <<if $NPCList[0].penis isnot "none">>penis<<else>>pussy<</if>> and stop <<him>>. You lean closer, "I'm not done yet," you coo into <<his>> ear. You recommence rubbing.
+<br><br>
+<<He>> lasts a bit longer this time, but still cums pretty quickly. You keep teasing <<him>> through <<his>> orgasm, making <<him>> squirm. "Careful," you whisper. "You don't want people to see you like this, right?"
+<br><br>
+After a minute <<he>> cums again. "That was the third time," you say as <<he>> stops shaking. "Right in the middle of the classroom. Who's the pervert now?"
+<br><br>
+"P-please," <<he>> whimpers. "No more."
+<br><br>
+Doren is getting close, so you pull away. The <<person>> shunts <<his>> chair far away from you. You think <<he>> learned <<his>> lesson.
+<<promiscuity4>>
+<<clotheson>>
+<<endmasturbation>>
+<<endcombat>>
+<<link [[Next|English Lesson Daydream]]>><</link>>
+<br>
+
+:: English Rub Refuse
+
+<<set $outside to 0>><<set $location to "school">><<effects>>
+"Suit yourself," <<he>> says. "Hey everyone." <<He>> lifts your arm into the air as heads turn to look. "I caught this perv masturbating."
+<br><br>
+You try to protest, but your flushed face gives the truth away. <<if $exposed gte 1>>Not to mention your dishevelled clothing.<</if>> You wrench your arm away from the <<person>> as the class bursts into laughter.
+<br><br>
+<<fameexhibitionism 30>>
+<<clotheson>>
+<<endmasturbation>>
+<<endcombat>>
+<<npc Doren>><<person1>>Doren makes <<his>> way over and stands beside your desk. "I can't ignore this I'm afraid. Leighton will want to see you in detention." <<He>> looks concerned.
+<br><br>
+<<link [[Nod|English Lesson Daydream]]>><<endevent>><</link>>
+<br>
+<<link [[Stare down in shame|English Events Masturbation Stare]]>><<trauma 6>><<stress 6>><<status -10>><<npcincr Doren love 1>><</link>><<gtrauma>><<gstress>><<lcool>>
+<br>
+
+:: English Events Masturbation Stare
+
+<<set $outside to 0>><<set $location to "school">><<effects>>
+Doren looks around the classroom. "Be quiet!" <<he>> bellows. The class falls silent.
+<br><br>
+<<if $dorenhonest isnot 1>>
+	<<person1>>Doren looks back at you. "I'd like to speak to you outside. Come on." You follow <<him>> from the classroom, keeping your head bowed and knowing everyone must be staring at you.
+	<br><br>
+	<<He>> shuts the door behind you and speaks in an uncharacteristically quiet tone. "Is everything alright <<lass>>, or is there something you want to tell me about?"
+	<br><br>
+	<<link [[Be honest|English Events Honest]]>><<npcincr Doren love 1>><<stress 6>><<trauma -6>><</link>><<gstress>><<ltrauma>>
+	<br>
+	<<link [[Say you're fine|English Events Masturbation Fine]]>><</link>>
+	<br>
+<<else>>
+	<<endevent>>
+	<<link [[Next|English Lesson Daydream]]>><</link>>
+	<br>
+<</if>>
+
+:: English Events Masturbation Fine
+
+<<set $outside to 0>><<set $location to "school">><<effects>>
+You put on a brave face and tell <<him>> you're fine. "Okay. If you say so," <<he>> says. "Now let's get back to class before they break a window."
+<br><br>
+<<endevent>>
+<<link [[Next|English Lesson Daydream]]>><</link>>
+<br>
+
+:: History Masturbate Strip
+
+<<set $outside to 0>><<set $location to "school">><<effects>>
+<<if $player.penisExist and $worn.genitals.name is "chastity cage" and $worn.genitals.origin is "Winter">>
+	<<if $worn.under_lower.type.includes("naked")>>
+		You <<nervously>> remove your $worn.lower.name while trying to keep your <<genitals>> concealed from the teacher. "I'll overlook your lack of underwear, this time," <<he>> says.
+	<<else>>
+		You <<nervously>> remove your $worn.lower.name and $worn.under_lower.name while trying to keep your <<genitals>> concealed from the teacher.
+		<<underlowerstrip>>
+	<</if>>
+	<<if playerBellySize() lte 7>>
+		As Winter moves your hands <<his>> eyes widen. "Oh," <<he>> says. "You're already locked up, and it wasn't enough?" <<He>> thinks for a moment. "I found the key to the chastity cage you're wearing, let's take this a step further." <<He>> pulls a key from <<his>> pocket and unlocks the cage from around your penis.
+		<<set $worn.genitals.type.push("broken")>>
+		<<genitalsruined>>
+		<<if $vaginalchastityparasite isnot 0>>
+			<span class="pink">With the chastity belt gone, the $vaginalchastityparasite fall out of your vagina.</span>
+			<<set $vaginalchastityparasite to 0>>
+		<</if>>
+		<<if $penilechastityparasite isnot 0>>
+			<span class="pink">With the chastity belt gone, the $penilechastityparasite fall off of your penis.</span>
+			<<set $penilechastityparasite to 0>>
+		<</if>>
+		<br><br>
+		<<genitalswear 1>>
+		<<set $worn.genitals.origin to "Winter">>
+		<<He>> wraps the belt around your waist. The lock shuts with a loud click. "There," <<he>> says. "No more temptation for you, I wouldn't let others see it if I were you."
+		<br><br>
+		<<if $speech_attitude is "meek">>
+			"Will you let me out?" you ask.
+		<<elseif $speech_attitude is "bratty">>
+			"This is humiliating," you say. "Where's the key?"
+		<<else>>
+			"When will you let me out?" you ask.
+		<</if>>
+		<br><br>
+		<<He>> shrugs. "The key to the belt is long lost. Hopefully by the time you get out you'll have developed some self control." <<He>> stands up. "Now let's get back to class."
+		<br><br>
+	<<else>>
+		"I understand that being with child can cause some hormonal needs," <<he>> says, glancing at your <<bellyDescription "pc">>. "Even so, please try to keep those things to a minimum. It's inappropriate." <<He>> stands up. "Now let's get back to class."
+		<br><br>
+	<</if>>
+	<<endevent>>
+	<<link [[Next|History Lesson Daydream]]>><<clotheson>><</link>>
+
+<<elseif playerChastity()>>
+	<<if $worn.under_lower.type.includes("naked")>>
+		You <<nervously>> remove your $worn.lower.name while trying to keep your <<genitals>> concealed from the teacher. "I'll overlook your lack of underwear, this time," <<he>> says.
+	<<else>>
+		You <<nervously>> remove your $worn.lower.name and $worn.under_lower.name while trying to keep your <<genitals>> concealed from the teacher.
+		<<underlowerstrip>>
+	<</if>>
+	As Winter moves your hands <<his>> eyes widen. "Oh," <<he>> says. "You're already locked up, and it wasn't enough?" <<He>> thinks for a moment. "There's only one thing for it." <<He>> sits on the box and bends you over <<his>> knee.
+	<<lowerstrip>>
+	<br><br>
+	<<link [[Next|History Masturbate Spank]]>><<set $molestationstart to 1>><</link>>
+	<br>
+<<else>>
+	<<if $worn.under_lower.type.includes("naked")>>
+		You remove your $worn.lower.name while trying to keep your <<genitals>> concealed from the teacher. "I'll overlook your lack of underwear, this time," <<he>> says.
+	<<else>>
+		You remove your $worn.lower.name and $worn.under_lower.name while trying to keep your <<genitals>> concealed from the teacher.
+		<<underlowerstrip>>
+	<</if>>
+	<<lowerstrip>>
+	<<if $player.penisExist and $player.vaginaExist>>
+		If <<hes>> surprised by your unique genitalia, <<he>> gives no sign.
+	<</if>>
+	<<if playerBellySize() lte 7 or $player.sex isnot "f">>
+		<<if $player.sex is "f">>
+			<<genitalswear 1>>
+		<<else>>
+			<<genitalswear 2>>
+		<</if>>
+		<<set $worn.genitals.origin to "Winter">>
+		<<set $genderknown.pushUnique("Winter")>>
+		Once naked from the waist down, <<he>> wraps the <<if $player.penisExist>>cage<<else>>belt<</if>> around your waist. The lock shuts with a loud click. "There," <<he>> says. "No more temptation for you."
+		<br><br>
+		<<if $speech_attitude is "meek">>
+			"Will you let me out?" you ask.
+		<<elseif $speech_attitude is "bratty">>
+			"This is humiliating," you say. "Where's the key?"
+		<<else>>
+			"When will you let me out?" you ask.
+		<</if>>
+		<br><br>
+		<<if $player.penisExist>>
+			<<He>> shrugs. "Maybe, not sure where the key is though.
+		<<else>>
+			<<He>> shrugs. "The key is long lost.
+		<</if>>
+		Hopefully by the time you get out you'll have developed some self control." <<He>> stands up. "Now let's get back to class."
+		<br><br>
+	<<else>>
+		"I understand that being with child can cause some hormonal needs," <<he>> says, glancing at your <<bellyDescription "pc">>. "Even so, please try to keep those things to a minimum. It's inappropriate." <<He>> stands up. "Now let's get back to class."
+		<br><br>
+	<</if>>
+	<<endevent>>
+	<<link [[Next|History Lesson Daydream]]>><<clotheson>><</link>>
+<</if>>
+
+:: History Masturbate Refuse
+
+<<set $outside to 0>><<set $location to "school">><<effects>>
 <<if $speech_attitude is "meek">>
-	"A party?" you ask. "May I come?"
+	"N-no," you say, unable to make eye contact.
 <<elseif $speech_attitude is "bratty">>
-	"Whatever you're doing," you say. "I want in."
+	"Fuck off you old pervert," you say.
 <<else>>
-	"What's this about a party?" you ask. "Sounds fun."
+	"No," you say. "I don't want to wear it."
 <</if>>
 <br><br>
+"I insist," <<he>> says, and lunges for you. You dodge out the way and flee the room. "We'll see how quick you are once Leighton is through with you," <<he>> shouts as you run down the corridor.
+<<pass 10>>
+<br><br>
+<<endevent>>
+<<link [[Next|Hallways]]>><</link>>
+<br>
 
-<<if $cool gte 240>>
-	The <<person1>><<person>> perks up at your approach. "We're having a party at the lake," <<he>> says. "Halloween night. Everyone's invited."
-	<br><br>
+:: History Masturbate Spank
 
-	<<His>> friend grabs your arm in excitement. "You should come!" <<person2>><<he>> says, before backing off with a blush. "I-if you want to."
-	<br><br>
-
-	They wave over their shoulders as they continue <<if $location is "school">>down the hall<<else>>into the woods<</if>>.
-<<elseif $cool gte 120>>
-	The <<person2>><<person>> glances over, holding <<his>> phone aside. "There's gonna be a Halloween party at the lake," <<he>> says.
-	<br><br>
-
-	<<His>> friend nods. "It's open-invite." <<person1>><<He>> pauses, <<his>> gaze crawling up your body. "You should come."
-	<br><br>
-
-	They bid you goodbye and continue <<if $location is "school">>down the hall<<else>>into the woods<</if>>.
-<<else>>
-	The <<person1>><<person>> regards you with a sneer. "Party at the lake," <<he>> says. "On Halloween."
-	<br><br>
-
-	"Don't think about crashing it," the <<person2>><<person>> butts in. "A freak like you'd scare everyone away."
-	<br><br>
-
-	Their mocking laughter fades as they <<if $location is "school">>round a corner<<else>>disappear past the trees<</if>>.
+<<if $molestationstart is 1>>
+	<<set $molestationstart to 0>>
+	<<controlloss>>
+	<<violence 1>>
+	<<neutral 1>>
+	<<molested>>
+	<<maninit>><<npcspank>><<npcidlegenitals>>
+	<<set $enemyanger += 150>>
 <</if>>
+
+<<effects>>
+<<effectsman>>
+<<man>>
+<<stateman>>
+<br><br>
+<<actionsman>>
+
+<<if _combatend or $enemyanger lte 20>>
+	<span id="next"><<link [[Next|History Masturbate Spank Finish]]>><</link>></span><<nexttext>>
+<<else>>
+	<span id="next"><<link [[Next|History Masturbate Spank]]>><</link>></span><<nexttext>>
+<</if>>
+
+:: History Masturbate Spank Finish
+<<set $outside to 0>><<set $location to "school">><<effects>>
+
+<<if $enemyarousal gte $enemyarousalmax>>
+	<<ejaculation>>
+	"You're an energetic one," <<he>> pants. <<tearful>> you follow <<him>> back to class.
+	<br><br>
+
+	<<clothesontowel>>
+	<<endcombat>>
+
+	<<link [[Next|History Lesson Daydream]]>><</link>>
+	<br>
+<<elseif $enemyhealth lte 0>>
+	<<He>> recoils in pain and you squirm from <<his>> grip. "You can't run from punishment forever," <<he>> shouts. <<tearful>> you run from the room and down the corridor.
+	<<pass 10>>
+	<br><br>
+
+	<<clotheson>>
+	<<endcombat>>
+
+	<<link [[Next|Hallways]]>><</link>>
+	<br>
+<<else>>
+	<<He>> releases you. "I hope you've learnt your lesson. Masturbation causes all sorts of health problems." <<tearful>> you follow <<him>> back to class.
+	<br><br>
+
+	<<clothesontowel>>
+	<<endcombat>>
+
+	<<link [[Next|History Lesson Daydream]]>><</link>>
+	<br>
+<</if>>
+
+:: Swimming Masturbate Nod
+<<set $outside to 0>><<set $location to "pool">><<effects>>
+
+You nod. <<He>> still looks concerned. "If you're sure," <<he>> says. "Tell me if you start shivering like that again. It could be dangerous." <<He>> helps you back into the pool and continues the lesson.
 <br><br>
 
-<<if $location is "school">>
-	<<link [[Next|Hallways]]>><<endevent>><<set $eventskip to 1>><</link>>
-	<br>
-<<else>>
-	<<link [[Next|Forest]]>><<endevent>><<set $eventskip to 1>><</link>>
-	<br>
-<</if>>
+<<endcombat>>
 
-:: Lake Halloween Invite Ignore
+<<link [[Next|Swimming Lesson Daydream]]>><</link>>
+<br>
+
+:: Swimming Masturbate Kiss
+<<set $outside to 0>><<set $location to "pool">><<effects>>
+
+You plant a kiss on <<his>> lips. <<takeKissVirginity "Mason">><<He>> recoils with a mix of confusion and horror on <<his>> face. The other students laugh and cheer. <<His>> face turns red. "Okay then," <<he>> says. "Back in the pool." <<He>> avoids looking at you for the rest of the lesson.
+<<promiscuity2>>
+
+<<endcombat>>
+
+<<link [[Next|Swimming Lesson Daydream]]>><</link>>
+<br>
+
+
+:: Housekeeping Lesson Masturbate
 <<effects>>
 
-You continue past the pair.
-<<if $cool gte 240>>
-	The <<person1>><<person>> gives you a smile, but doesn't stop to chat.
-<<elseif $cool gte 120>>
-	They ignore you, too caught up in their conversation.
-<<else>>
-	The <<person1>><<person>> spits in your direction, but doesn't stop to harass you further.<<trauma 2>><<gtrauma>>
-<</if>>
-<br><br>
+<<if $masturbationstart is 1>>
+	<<set $masturbationstart to 0>>
+	<<set $masturbationstat += 1>>
 
-As you pass, you can't help overhearing the <<person2>><<person>>. "Don't be chicken," <<he>> laughs. "We won't go past the lake. You'd rather spend the night trick-or-treating?"
-<br><br>
+	You want to touch yourself, here in the middle of your housekeeping lesson. You look around. Everyone's distracted. No one would notice.<<exhibitionism4>>
 
-You don't catch the rest as the two <<if $location is "school">>round a corner<<else>>disappear past the trees<</if>>.
-<br><br>
-
-<<if $location is "school">>
-	<<link [[Next|Hallways]]>><<endevent>><<set $eventskip to 1>><</link>>
-	<br>
-<<else>>
-	<<link [[Next|Forest]]>><<endevent>><<set $eventskip to 1>><</link>>
-	<br>
+	<<masturbationstart>>
+	<<set $timer to 20>>
+	<<set $mouth to "disabled">>
 <</if>>
 
-:: Lake Halloween Party
-<<set $outside to 1>><<set $location to "lake">><<effects>>
+You fondle yourself. The other students are so near, they could so easily see what you're doing.
+<<garousal>><<arousal 100 "genitals">>
+<br>
+<<masturbationeffects>>
+<<masturbationactions>>
+<<masturbationControls "timer|arousal100">>
 
-<<if $phase is 0>>
-	You settle down by the bonfire, surrounded by raucous youths.
-	<<if $cool gte 240>>
-		They greet you with a cheer, drunkenly stumbling over each other for a seat beside you.
-	<<elseif $cool gte 120>>
-		They greet you warmly. You suspect the alcohol has something to do with that.
+:: Housekeeping Lesson Masturbate Finish
+<<set $outside to 0>><<set $location to "school">><<effects>>
+
+<<if $timer lte 0 and $orgasmdown gte 1>>
+	<<npc River>><<person1>>You hear River marching towards you mid-climax! You try to rearrange your clothing and sit upright, but you can't stop the spasms. With a final desperate flail, you knock over a bag of flour, covering yourself.
+	<br><br>
+	"Clumsy fool," River says, looking at your powdery body. "Go wipe yourself down. Then I want you to clean up this mess." <<Hes>> too distracted by the mess to notice the other peculiarities.
+	<<gdelinquency>><<detention 3>>
+	<br><br>
+
+	<<endmasturbation>>
+	<<endcombat>>
+
+	<<link [[Next|Housekeeping Lesson Masturbate Caught]]>><</link>>
+	<br>
+
+<<else>>
+	<<if $timer lte 0>>
+		You hear River marching towards you! You quickly rearrange your clothing and sit upright. River stops beside you. "You're looking rather flushed," the teacher says. "You should inform me if you have any allergies." You exhale as River walks away.
 	<<else>>
-		No one pays you any mind, not even to pester you. Perhaps they don't recognise you in the dim light. Or they're too drunk to care.
+		Not wanting to risk it further, you rearrange your clothing and sit upright. You don't think anyone noticed.
 	<</if>>
 	<br><br>
+	<<endmasturbation>>
+	<<clotheson>>
+	<<endcombat>>
+	<<towelup>>
+	Touching yourself in front of so many unaware people feels fantastic. It takes a while for your racing heart and flushed face to return to normal.
+	<br><br>
+
+	<<advancelesson>>
+
+	<<if $phase is 1>>
+		<<lessonEnd "housekeepingClassroom">>
+	<<else>>
+		<<lessonEvents "housekeeping">>
+	<</if>>
 <</if>>
 
-<<if playerAwareTheyArePregnant()>>
-	You sit and chat under the moonlight, though you refrain from any drinks.
-<<else>>
-	<<wearProp "solo cup">>
-	You sit, chat, and drink under the moonlight.
+:: Toilets Watched Masturbation
+<<effects>>
+
+<<if $masturbationstart is 1>>
+	<<set $masturbationstart to 0>>
+	<<set $masturbationstat += 1>>
+	<<masturbationstart>>
+	<<set $timer to random(5, 50)>>
 <</if>>
-The others try to entertain themselves with ghost stories.
-<<generatey1>><<person1>>
-<<switch random(1, 5)>>
-	<<case 5>>They're not very scary, but a <<person>> is still shaking by the end.
-	<<case 4>>A <<person>> claims the lake itself is haunted. The others laugh <<him>> off.
-	<<case 3>>They're not very scary. Most of the fun comes from jokes at the storytellers' expense.
-	<<case 2>>A <<persons>> story leaves the whole party howling with ridicule. <<He>> washes down the shame with another beer.
-	<<case 1>>One drives a <<person>> to tears, to the amusement of the group. <<He>> sniffles and retreats to the woods, drawing further laughter.
-<</switch>>
+
+You fondle yourself. <<if $phase2 is 1>>They watch<<else>>The <<person1>><<person>> watches<</if>> with great interest.
+<<garousal>><<arousal 50 "genitals">>
 <br><br>
 
-<<if $syndromewolves is 1 and !$halloweenWolves>><<set $halloweenWolves to 1>>
-	The party is suddenly silenced by a cry from the woods. A howl, followed by cursing, then a pained yelp.
-	<br><br>
+<<if $orgasmdown gte 1>>
+	<<set $timer -= 5>>
+	<<if $phase2 is 1>>They watch<<else>>The <<person1>><<person>> watches<</if>> your climax with awe. "Look at <<phim>> go!"
+<</if>>
 
-	<<investigateicon>><<link [[Investigate|Lake Halloween Wolves Investigate]]>><<endevent>><</link>>
-	<br>
-	<<ind>><<link [[Stay seated|Lake Halloween Wolves Ignore]]>><<endevent>><</link>>
-	<br>
-<<elseif Time.monthDay isnot 31>>
-	It's getting late, and the shadows of the forest are lengthening. People are preparing to return to town. No one wants to be left to travel alone.
-	<br><br>
-	<<set _storedClothes to clothingInStorage("lakeshore")>>
+<<masturbationeffects>>
+<<masturbationactions>>
+<<masturbationControls "timer|arousal50">>
 
-	<<if $earSlime.forcedCommando isnot undefined and _storedClothes.find(item => item.slot is "under_lower" and !item.type.includes("naked"))>>
-		<span class="red">The slime in your ear refuses to allow you to leave with <<underwearTypeText>> on.</span>
-		<<set _earSlimeText to true>>
-	<<elseif _storedClothes.length>>
-		<<ind>><<link [[Get changed, then go with them (0:40)|Lake Return Journey]]>><<endevent>><<storeload "lakeshore">><<set $foresthunt to 0>><<pass 30>><</link>>
+:: Toilets Watched Masturbation Finish
+<<effects>>
+
+<<if $timer lte 0>>
+	The <<person1>><<person>> steps forward. "I think <<if $phase2 is 1>>we<<else>>I<</if>>'ve seen enough. Time to get hands-on." You try to stop touching yourself, but you can't control your spasms. <<if $phase2 is 1>>They block<<else>><<He>> blocks<</if>> you in the stall.
+	<<saveNPC 0 toilets_1>>
+	<<if $phase2 is 1>>
+		<<set _phasetemp to 1>>
+		<<saveNPC 1 toilets_2>>
+	<</if>>
+	<<endmasturbation>>
+	<<endcombat>>
+	<<loadNPC 0 toilets_1>>
+	<<if _phasetemp is 1>>
+		<<set $phase2 to 1>>
+		<<loadNPC 1 toilets_2>>
+	<</if>>
+	<br><br>
+	<<link [[Next|Toilets Molestation]]>><<set $molestationstart to 1>><</link>>
+<<else>>
+	You decide <<if $phase2 is 1>>they've<<else>><<hes>><</if>> seen enough.
+	<<if $orgasmcurrent is 0>>
+		<<saveNPC 0 toilets_1>>
+		<<if $phase2 is 1>>
+			<<set _phasetemp to 1>>
+			<<saveNPC 1 toilets_2>>
+		<</if>>
+		<<endmasturbation>>
+		<<endcombat>>
+		<<loadNPC 0 toilets_1>>
+		<<if _phasetemp is 1>>
+			<<set $phase2 to 1>>
+			<<loadNPC 1 toilets_2>>
+		<</if>>
+		"That was pretty pathetic, you didn't even finish!" <<if $phase2 is 1>>The <<person2>><<person>> nods in agreement.<</if>> "I think <<print ($phase2 is 1 ? "we" : "I")>> need to punish you for teasing us." <<if $phase2 is 1>>They step to<<else>><<person1>><<He>> steps<</if>> toward you, blocking you in the stall.
+		<br><br>
+		<<link [[Next|Toilets Molestation]]>><<set $molestationstart to 1>><</link>>
+	<<else>>
+		<<endmasturbation>>
+		<br>
+		You spread your legs wide, giving <<if $phase2 is 1>>them<<else>><<him>><</if>> a perfect view of the aftermath. <<if $phase2 is 1>>They stand<<else>><<He>> stands<</if>> stunned.
+		<br><br>
+		You stand up, and make sure to rub right up against the <<person1>><<person>> as you exit the stall. <<flaunting>> <<if $phase2 is 1>>they eye<<else>><<he>> eyes<</if>> you closely as you
+		<<storeon $bus "check">>
+		<<if _store_check is 1>>
+			<<storeon $bus>>
+			retrieve your clothes, and slowly dress in front of <<if $phase2 is 1>>them<<else>><<him>><</if>>,
+		<<else>>
+			look at yourself in the mirror, giving <<if $phase2 is 1>>one of them<<else>><<him>><</if>> a wink and
+		<</if>>giving your <<bottom>> a wiggle as you do so. They make no other moves towards you.
+		<<clotheson>>
+		<<endcombat>>
+		<<link [[Leave|Park]]>><<set $eventskip to 1>><</link>>
 		<br>
 	<</if>>
-	<<if $earSlime.forcedCommando isnot undefined and !$worn.under_lower.type.includes("naked")>>
-		<<if _earSlimeText>><span class="red">The slime in your ear refuses to allow you to leave with <<underwearTypeText>> on.</span><</if>>
-	<<elseif $exposed lte 0>>
-		<<ind>><<link [[Go with them (0:30)|Lake Return Journey]]>><<endevent>><<set $foresthunt to 0>><<pass 30>><</link>>
+<</if>>
+
+<!-- This passage contains contextual elements which require it to be used in conjunction with furniture.
+	See: [[Masturbate in bed|Home Masturbation]] -->
+:: Home Masturbation
+<<set $outside to 0>><<set $location to "home">><<effects>><<set _robin to statusCheck("Robin")>>
+
+<<if $masturbationstart is 1>>
+	You sink into the plush mattress and let your hands roam.
+	<<if hasSexStat("exhibitionism", 3)>>
+		You wonder how thin the walls are.
+	<<else>>
+		Hopefully no one barges in.
+	<</if>>
+	<br><br>
+
+	<<set $masturbationstart to 0>>
+	<<set $masturbationstat += 1>>
+	<<masturbationstart>>
+<</if>>
+<<masturbationeffects>>
+<<if C.npc.Robin.init is 1 and !$daily.robin.masturbation and $rng gte 91 and _robin_location is "orphanage" and _robin.lust gte 2 and _robin.love gte 50 and _robin.trauma lt 20>>
+	<<set $daily.robin.masturbation to true>>
+	<<if $robinromance and _robin.lust gte 30 and _robin.love gte 80>>
+		<<set $timer to 20>>
+		<<set $robinWatchingMasturbation to 1>>
+		<<set $robinWatchingMasturbationCount to ($robinWatchingMasturbationCount or 0) + 1>>
+	<<else>>
+		<<npc Robin>><<person1>>
+		You hear a creak, then a gasp. <span @class="$robinromance ? 'lewd' : 'red'">Robin stands in the doorway,</span>
+		<<if $worn.over_lower.vagina_exposed gte 1 and $worn.lower.vagina_exposed gte 1 and $worn.under_lower.vagina_exposed gte 1>>
+			eyes on your <<genitals>>.
+			<<if hasSexStat("exhibitionism", 3)>>
+				You don't bother covering up. <<Hes>> probably more embarrassed than you.
+			<<else>>
+				You pull the covers over your nudity, face flushed with shame.<<stress 6>><<gstress>>
+			<</if>>
+			<<arousal 500>><<npcincr Robin lust 2>><<garousal>><<glust>>
+		<<else>>
+			eyes wide in shock.
+			<<if hasSexStat("exhibitionism", 2)>>
+				You pay the interruption little mind. <<Hes>> probably more embarrassed than you.
+			<<else>>
+				You jolt upright, face flushed with shame.<<stress 6>><<gstress>>
+			<</if>>
+			<<arousal 200>><<npcincr Robin lust 1>><<garousal>><<glust>>
+		<</if>>
+		<br><br>
+
+		"I-I'm sorry!" <<he>> stutters. <<He>> closes your door in a hurry.
+		<br><br>
+	<</if>>
+<</if>>
+<<if $robinWatchingMasturbation and $timer gt 0>>
+	<span class="lewd">You feel like you're being watched.</span>
+	<br><br>
+<</if>>
+<<masturbationactions>>
+<<if $robinWatchingMasturbation and $timer gt 0 and $orgasmdown is 3>><<set $robinWatchingMasturbation++>><</if>>
+
+<<masturbationControls "robinWatching">>
+
+:: Home Masturbation Finish
+<<effects>>
+<<npcincr Robin lust `Math.clamp(($robinWatchingMasturbation or 0) * 3, 0, 15)`>>
+
+<<if $robinWatchingMasturbation and $timer gt 0>>
+	As you finish, you can hear the door close. You wonder who was there? <<arousal 500>><<garousal>><<if $exhibitionism lt 55>><<stress 2>><<gstress>><</if>>
+	<br><br>
+	<<endmasturbation>>
+	<<endcombat>>
+	<br>
+	<<link [[Next|Bedroom]]>><<clotheson>><<endevent>><</link>>
+	<br><br>
+<<else>>
+	There's not much of a thrill doing this here, but at least you feel refreshed.
+
+	<<endmasturbation>>
+	<<endcombat>>
+	<br>
+	<<if isLoveInterest("Kylar") and $kylar_camera is 7>>
+		You look at the owl plushie on your wardrobe and wink.
+		<br><br>
+	<</if>>
+
+	<<link [[Next|Bedroom]]>><<clotheson>><</link>>
+	<br>
+<</if>>
+<<unset $robinWatchingMasturbation>>
+
+:: Farm Shower Masturbation
+
+<<effects>><<set _enableSexToys to true>>
+<<if $masturbationstart is 1>>
+	You wonder what Alex would say if <<nnpc_he "Alex">> caught you doing this.
+	<<set $masturbationstart to 0>>
+	<<set $masturbationstat += 1>>
+	<<masturbationstart>>
+<</if>>
+<<masturbationeffects>>
+<<masturbationactions>>
+<<masturbationControls>>
+
+:: Farm Shower Masturbation Finish
+
+<<effects>>
+<<if random(0,100) gte Math.clamp(108 - ($masturbationorgasm * 4),60,100) and Time.dayState isnot "night">>
+	<<endmasturbation>>
+	<<endcombat>>
+	<<npc Alex>><<person1>>As you get up, you notice the open door with a blushing Alex holding onto the handle.
+	<<if C.npc.Alex.dom gte 20>>
+		<<He>> hesitates, then steps forward and closes the door behind <<him>>. "You sure looked like you were having fun there, may I join in?" <<he>> says, pushing you against the wall.
+		<br><br>
+		<<if hasSexStat("promiscuity", 2)>>
+			<<link [[Allow|Farm Shower Masturbation Sex]]>><<set $sexstart to 1>><<npcincr Alex dom 1>><<npcincr Alex love 1>><</link>><<gdom>><<glove>>
+			<br>
+		<</if>>
+		<<link [[Rush past|Farm Work]]>><<clotheson>><<npcincr Alex lust 5>><<endevent>><</link>><<gglust>>
+	<<else>>
+		<<He>> hesitates, then shuts the door. You get up and wash until you're squeaky clean again.<<wash>>
+		<br><br>
+		<<link [[Next|Farm Work]]>><<clotheson>><<npcincr Alex lust 2>><<endevent>><</link>><<glust>>
 		<br>
 	<</if>>
-
-	<<ind>><<link [[Stay|Lake Shore]]>><<endevent>><</link>>
-	<br>
 <<else>>
-	<<if playerAwareTheyArePregnant()>>
-		<<socialiseicon "party">><<link [[Keep partying (0:10)|Lake Halloween Party]]>><<endevent>><<set $phase to 1>><<stress -4>><<status 1>><<pass 10>><</link>><<lstress>><<gcool>>
+	<<endmasturbation>>
+	<<endcombat>>
+	You get up and wash until you're squeaky clean again.<<wash>>
+	<br><br>
+	<<link [[Next|Farm Work]]>><<clotheson>><</link>>
+<</if>>
+
+:: Brothel Shower Masturbation
+<<effects>><<set _enableSexToys to true>>
+<<if $masturbationstart is 1 || $masturbationstart is 2>>
+	<<if hasSexStat("exhibitionism", 5)>>
+	You do nothing to stifle your voice or hide what you're doing in the hopes that someone watches you. <<if $masturbationstart is 2>><<exhibitionism4>><</if>>
+	<<elseif hasSexStat("exhibitionism", 4)>>
+	You couldn't care less who's in the room as long as they don't pay too close attention to you. <<if $masturbationstart is 2>><<exhibitionism3>><</if>>
+	<<elseif hasSexStat("exhibitionism", 3)>>
+	You're not entirely comfortable around this many people, but you're not overly concerned with them glancing your way. <<if $masturbationstart is 2>><<exhibitionism2>><</if>>
 	<<else>>
-		<<socialiseicon "party">><<link [[Keep partying (0:10)|Lake Halloween Party]]>><<endevent>><<set $phase to 1>><<stress -4>><<alcohol 20>><<status 1>><<pass 10>><</link>><<lstress>><<gcool>><<galcohol>>
+	You try your best not to look at any of the other dancers and hide what you're doing in the hopes that no one looks your way. <<if $masturbationstart is 2>><<exhibitionism1>><</if>>
 	<</if>>
-	<br>
-	<<getouticon>><<link [[Leave|Lake Shore]]>><<endevent>><<set $phase to 0>><</link>>
-	<br>
+	<<set $masturbationstart to 0>>
+	<<set $masturbationstat += 1>>
+	<<masturbationstart>>
 <</if>>
+<<masturbationeffects>>
+<<masturbationactions>>
 
-:: Lake Halloween Wolves Investigate
-<<set $outside to 1>><<set $location to "lake">><<effects>>
-<<beastNEWinit 1 wolf>><<generatey2>>
+<<masturbationControls>>
 
-You peer between the trees, where you find a <<beasttype 0>> hounded by a gang of delinquents. From the look of <<bhis 0>>
-<<if $monster is 1>>
-	mussed hair and the bruises lining <<bhis 0>> body,
-<<else>>
-	patchy fur and haggard stance,
+:: Brothel Shower Masturbation Finish
+<<effects>>
+<<endmasturbation>>
+<<endcombat>>
+You pull yourself away from the wall on unsteady legs and wash until you're squeaky clean again.<<wash>>
+<br><br>
+<<link [[Next|Brothel Bathroom]]>><<clotheson>><</link>>
+
+:: Strip Club Shower Masturbation
+<<effects>><<set _enableSexToys to true>>
+<<if $masturbationstart is 1>>
+	You can't stop yourself from thinking about all the people on the other side of the cubicle and what it would be like if they were watching you.
+	<<set $masturbationstart to 0>>
+	<<set $masturbationstat += 1>>
+	<<masturbationstart>>
 <</if>>
-<<bhes>> fighting a losing battle.
+<<masturbationeffects>>
+<<masturbationactions>>
+<<masturbationControls>>
+
+:: Strip Club Shower Masturbation Finish
+<<effects>>
+<<endmasturbation>>
+<<endcombat>>
+You pull yourself away from the wall on unsteady legs and wash until you're squeaky clean again.<<wash>>
 <br><br>
+<<link [[Next|Strip Club Bathroom]]>><<clotheson>><</link>>
 
-"Piss off, mutt," a <<person2>><<person>> slurs. <<He>> hurls a rock at the <<beasttype 0>>, hitting <<bhim 0>> dead in the <<if $monster is 1>>face<<else>>snout<</if>>. <<bHe 0>> howls in pain. The onlookers cheer.<<stress 6>><<gstress>>
+:: Bird Tower Masturbation
+<<effects>><<set _enableSexToys to true>>
+<<if $masturbationstart is 1>>
+	<<noClothingCheck>>
+	You <<if !_nude>>remove your clothing and <</if>>slip into the water, the gentle warmth enveloping you. You let your hands wander.
+	<<set $masturbationstart to 0>>
+	<<set $masturbationstat += 1>>
+	<<masturbationstart>>
+<</if>>
+<<masturbationeffects>>
+<<masturbationactions>>
+<<masturbationControls>>
+
+:: Bird Tower Masturbation Finish
+<<effects>>
+<<endmasturbation>>
+<<endcombat>>
+You clean yourself up and climb out of the rainwater pool.<<wash>>
 <br><br>
-
-Guilt takes you as you watch the <<beasttype 0>> limp <<bhis 0>> way into the brush, towards the cave. <span class="blue">You should check up on them.</span>
-<br><br>
-
-<<endevent>>
-<<link [[Next|Lake Shore]]>><</link>>
-<br>
-
-:: Lake Halloween Wolves Ignore
-<<set $outside to 1>><<set $location to "lake">><<effects>>
-<<beastNEWinit 1 wolf>><<generatey2>>
-
-Leaves rustle behind you. You turn in time to catch a <<beasttype 0>> rushing past. <<bHis 0>> eyes are wild with fear, and <<bhe 0>> doesn't stop to regard you.
-<br><br>
-
-The others scream at the intrusion and scurry away in a panic. Until a <<person2>><<person>> bursts through, armed with a heavy branch. <<He>> swings it, hitting the <<beasttype 0>> dead in the chest. <<bHe 0>> howls in pain. The onlookers cheer.<<stress 6>><<gstress>>
-<br><br>
-
-Guilt takes you as you watch the <<beasttype>> limp <<bhis 0>> way into the brush, towards the cave. <span class="blue">You should check up on them.</span>
-<br><br>
-
-<<endevent>>
-<<socialiseicon "party">><<link [[Keep partying (0:10)|Lake Halloween Party]]>><<set $phase to 1>><<pass 10>><<status 1>><</link>><<gcool>>
-<br>
-<<getouticon>><<link [[Leave|Lake Shore]]>><</link>>
-<br>
+<<link [[Next|Bird Tower]]>><<clotheson>><</link>>
